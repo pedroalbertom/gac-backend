@@ -22,14 +22,57 @@ com.gac.api
         └── movement/
 ```
 
-## Naming conventions
+## Domain model (v1.3 alignment)
 
-- Use cases: `Create*`, `List*`, `Update*`, `Delete*`, `Find*`
-- Gateway methods: `save`, `findAll`, `findById`, `deleteById`
-- Domain method on use cases: `execute(...)`
-- Roles: `ADMIN`, `ATTENDANT`
-- Item status: `AVAILABLE`, `ON_LOAN`, `MAINTENANCE`
-- Movement type: `LOAN`, `RETURN` (legacy prototype; will change with requirements v1.3)
+### Roles
+`ADMIN`, `ATTENDANT`, `PROFESSOR`
+
+### Item status
+`AVAILABLE`, `RESERVED`, `ON_LOAN`, `MAINTENANCE`
+
+### Movement types
+`RESERVATION`, `LOAN`, `RETURN`, `EXCHANGE`
+
+### Movement lifecycle
+Each movement references **one asset** (`assetType` + `assetId`).
+
+| Status | Meaning |
+|--------|---------|
+| `OPEN` | Active reservation or loan |
+| `COMPLETED` | Finished (e.g. reservation converted to loan) |
+| `CANCELLED` | Cancelled reservation |
+
+**RN08:** movements are never deleted — only status transitions and new records.
+
+### Asset fields (Projector / Key)
+- `reservedRegistrationNumber` — set when status is `RESERVED`
+- `defectDescription` — set when returned with defect or exchanged
+- Projector: `serialNumber`
+- Key: `spareKey`, optional `assetTag`
+
+## Movement flow (reservation → loan)
+
+```
+Professor                    System                         Attendant
+    |                           |                                |
+    |-- CreateReservation ----->|                                |
+    |                           | asset → RESERVED               |
+    |                           | movement RESERVATION / OPEN    |
+    |<-- confirmation code -----|                                |
+    |                           |                                |
+    |                           |<-------- ConfirmLoan ----------|
+    |                           | validate code (RN12)           |
+    |                           | RESERVATION → COMPLETED        |
+    |                           | LOAN / OPEN                    |
+    |                           | asset → ON_LOAN                |
+```
+
+### Use cases
+| Use case | Actor | Description |
+|----------|-------|-------------|
+| `CreateReservationUseCase` | Professor | UC11 — reserve available asset, generate 4-digit code |
+| `ConfirmLoanUseCase` | Attendant | UC03 — validate code, close reservation, open loan |
+| `CancelReservationUseCase` | Professor | UC11 alt — cancel own open reservation |
 
 ## Local run
 

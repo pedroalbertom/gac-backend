@@ -26,10 +26,14 @@ public class ProjectorEntity {
 
     private String brand;
     private String model;
+    private String serialNumber;
 
     @Column(unique = true)
     private String assetTag;
 
     @Enumerated(EnumType.STRING)
     private ItemStatus status;
+
+    private String reservedRegistrationNumber;
+    private String defectDescription;
 }

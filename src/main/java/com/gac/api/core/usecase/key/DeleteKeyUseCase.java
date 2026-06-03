@@ -16,8 +16,8 @@ public class DeleteKeyUseCase {
         Key key = keyGateway.findById(id)
                 .orElseThrow(() -> new RuntimeException("Key not found for the given id."));
 
-        if (key.getStatus() == ItemStatus.ON_LOAN) {
-            throw new RuntimeException("Business rule: keys on loan cannot be removed.");
+        if (key.getStatus() == ItemStatus.ON_LOAN || key.getStatus() == ItemStatus.RESERVED) {
+            throw new RuntimeException("Business rule: reserved or on-loan keys cannot be removed.");
         }
 
         keyGateway.deleteById(id);

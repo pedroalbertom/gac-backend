@@ -1,39 +1,28 @@
 package com.gac.api.core.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Movement {
 
     private Long id;
-    private LocalDateTime dateTime;
-    private String professorRegistrationNumber;
-    private String room;
-    private User attendant;
     private MovementType type;
-    private List<Projector> projectors;
-    private List<Key> keys;
+    private MovementStatus status;
+    private String professorRegistrationNumber;
+    private Long attendantId;
+    private AssetType assetType;
+    private Long assetId;
+    private String confirmationCode;
+    private String academicPurpose;
+    private String room;
+    private String defectDescription;
+    private LocalDateTime checkedOutAt;
+    private LocalDateTime returnedAt;
+    private LocalDateTime createdAt;
+    private List<String> loanedAccessories = new ArrayList<>();
 
     public Movement() {
-    }
-
-    public Movement(
-            Long id,
-            LocalDateTime dateTime,
-            String professorRegistrationNumber,
-            String room,
-            User attendant,
-            MovementType type,
-            List<Projector> projectors,
-            List<Key> keys) {
-        this.id = id;
-        this.dateTime = dateTime;
-        this.professorRegistrationNumber = professorRegistrationNumber;
-        this.room = room;
-        this.attendant = attendant;
-        this.type = type;
-        this.projectors = projectors;
-        this.keys = keys;
     }
 
     public Long getId() {
@@ -44,12 +33,20 @@ public class Movement {
         this.id = id;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public MovementType getType() {
+        return type;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public void setType(MovementType type) {
+        this.type = type;
+    }
+
+    public MovementStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(MovementStatus status) {
+        this.status = status;
     }
 
     public String getProfessorRegistrationNumber() {
@@ -60,6 +57,46 @@ public class Movement {
         this.professorRegistrationNumber = professorRegistrationNumber;
     }
 
+    public Long getAttendantId() {
+        return attendantId;
+    }
+
+    public void setAttendantId(Long attendantId) {
+        this.attendantId = attendantId;
+    }
+
+    public AssetType getAssetType() {
+        return assetType;
+    }
+
+    public void setAssetType(AssetType assetType) {
+        this.assetType = assetType;
+    }
+
+    public Long getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(Long assetId) {
+        this.assetId = assetId;
+    }
+
+    public String getConfirmationCode() {
+        return confirmationCode;
+    }
+
+    public void setConfirmationCode(String confirmationCode) {
+        this.confirmationCode = confirmationCode;
+    }
+
+    public String getAcademicPurpose() {
+        return academicPurpose;
+    }
+
+    public void setAcademicPurpose(String academicPurpose) {
+        this.academicPurpose = academicPurpose;
+    }
+
     public String getRoom() {
         return room;
     }
@@ -68,35 +105,43 @@ public class Movement {
         this.room = room;
     }
 
-    public User getAttendant() {
-        return attendant;
+    public String getDefectDescription() {
+        return defectDescription;
     }
 
-    public void setAttendant(User attendant) {
-        this.attendant = attendant;
+    public void setDefectDescription(String defectDescription) {
+        this.defectDescription = defectDescription;
     }
 
-    public MovementType getType() {
-        return type;
+    public LocalDateTime getCheckedOutAt() {
+        return checkedOutAt;
     }
 
-    public void setType(MovementType type) {
-        this.type = type;
+    public void setCheckedOutAt(LocalDateTime checkedOutAt) {
+        this.checkedOutAt = checkedOutAt;
     }
 
-    public List<Projector> getProjectors() {
-        return projectors;
+    public LocalDateTime getReturnedAt() {
+        return returnedAt;
     }
 
-    public void setProjectors(List<Projector> projectors) {
-        this.projectors = projectors;
+    public void setReturnedAt(LocalDateTime returnedAt) {
+        this.returnedAt = returnedAt;
     }
 
-    public List<Key> getKeys() {
-        return keys;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setKeys(List<Key> keys) {
-        this.keys = keys;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public List<String> getLoanedAccessories() {
+        return loanedAccessories;
+    }
+
+    public void setLoanedAccessories(List<String> loanedAccessories) {
+        this.loanedAccessories = loanedAccessories != null ? loanedAccessories : new ArrayList<>();
     }
 }

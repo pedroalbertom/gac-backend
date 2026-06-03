@@ -17,8 +17,7 @@ public class KeyGatewayImpl implements KeyGateway {
 
     @Override
     public Key save(Key key) {
-        KeyEntity entity = new KeyEntity(key.getId(), key.getRoom(), key.getBlock(), key.getStatus());
-        return toDomain(repository.save(entity));
+        return toDomain(repository.save(toEntity(key)));
     }
 
     @Override
@@ -36,7 +35,27 @@ public class KeyGatewayImpl implements KeyGateway {
         repository.deleteById(id);
     }
 
+    private KeyEntity toEntity(Key key) {
+        return new KeyEntity(
+                key.getId(),
+                key.getRoom(),
+                key.getBlock(),
+                key.getAssetTag(),
+                key.isSpareKey(),
+                key.getStatus(),
+                key.getReservedRegistrationNumber(),
+                key.getDefectDescription());
+    }
+
     private Key toDomain(KeyEntity entity) {
-        return new Key(entity.getId(), entity.getRoom(), entity.getBlock(), entity.getStatus());
+        return new Key(
+                entity.getId(),
+                entity.getRoom(),
+                entity.getBlock(),
+                entity.getAssetTag(),
+                entity.isSpareKey(),
+                entity.getStatus(),
+                entity.getReservedRegistrationNumber(),
+                entity.getDefectDescription());
     }
 }

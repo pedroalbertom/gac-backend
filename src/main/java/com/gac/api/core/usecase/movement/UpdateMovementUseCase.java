@@ -1,6 +1,7 @@
 package com.gac.api.core.usecase.movement;
 
 import com.gac.api.core.domain.Movement;
+import com.gac.api.core.domain.MovementStatus;
 import com.gac.api.core.gateway.MovementGateway;
 
 public class UpdateMovementUseCase {
@@ -15,11 +16,15 @@ public class UpdateMovementUseCase {
         Movement existing = movementGateway.findById(id)
                 .orElseThrow(() -> new RuntimeException("Movement record not found."));
 
-        existing.setProfessorRegistrationNumber(updatedData.getProfessorRegistrationNumber());
-        existing.setRoom(updatedData.getRoom());
+        if (existing.getStatus() != MovementStatus.OPEN) {
+            throw new RuntimeException("Completed or cancelled movements cannot be updated.");
+        }
 
-        if (updatedData.getDateTime() != null) {
-            existing.setDateTime(updatedData.getDateTime());
+        if (updatedData.getAcademicPurpose() != null) {
+            existing.setAcademicPurpose(updatedData.getAcademicPurpose());
+        }
+        if (updatedData.getRoom() != null) {
+            existing.setRoom(updatedData.getRoom());
         }
 
         return movementGateway.save(existing);

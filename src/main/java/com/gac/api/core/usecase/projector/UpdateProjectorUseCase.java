@@ -18,6 +18,7 @@ public class UpdateProjectorUseCase {
         existing.setBrand(updatedData.getBrand());
         existing.setModel(updatedData.getModel());
         existing.setAssetTag(updatedData.getAssetTag());
+        existing.setSerialNumber(updatedData.getSerialNumber());
 
         return projectorGateway.save(existing);
     }

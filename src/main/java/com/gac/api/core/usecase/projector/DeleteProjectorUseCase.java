@@ -16,8 +16,8 @@ public class DeleteProjectorUseCase {
         Projector projector = projectorGateway.findById(id)
                 .orElseThrow(() -> new RuntimeException("Projector not found."));
 
-        if (projector.getStatus() == ItemStatus.ON_LOAN) {
-            throw new RuntimeException("Cannot delete a projector that is on loan.");
+        if (projector.getStatus() == ItemStatus.ON_LOAN || projector.getStatus() == ItemStatus.RESERVED) {
+            throw new RuntimeException("Cannot delete a projector that is reserved or on loan.");
         }
 
         projectorGateway.deleteById(id);

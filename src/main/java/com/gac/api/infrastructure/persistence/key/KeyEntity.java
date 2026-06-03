@@ -26,6 +26,13 @@ public class KeyEntity {
     private String room;
     private String block;
 
+    private String assetTag;
+
+    private boolean spareKey;
+
     @Enumerated(EnumType.STRING)
     private ItemStatus status;
+
+    private String reservedRegistrationNumber;
+    private String defectDescription;
 }

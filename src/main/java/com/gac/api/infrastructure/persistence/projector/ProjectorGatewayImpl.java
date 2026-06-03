@@ -17,13 +17,7 @@ public class ProjectorGatewayImpl implements ProjectorGateway {
 
     @Override
     public Projector save(Projector projector) {
-        ProjectorEntity entity = new ProjectorEntity(
-                projector.getId(),
-                projector.getBrand(),
-                projector.getModel(),
-                projector.getAssetTag(),
-                projector.getStatus());
-        return toDomain(repository.save(entity));
+        return toDomain(repository.save(toEntity(projector)));
     }
 
     @Override
@@ -46,12 +40,27 @@ public class ProjectorGatewayImpl implements ProjectorGateway {
         repository.deleteById(id);
     }
 
+    private ProjectorEntity toEntity(Projector projector) {
+        return new ProjectorEntity(
+                projector.getId(),
+                projector.getBrand(),
+                projector.getModel(),
+                projector.getSerialNumber(),
+                projector.getAssetTag(),
+                projector.getStatus(),
+                projector.getReservedRegistrationNumber(),
+                projector.getDefectDescription());
+    }
+
     private Projector toDomain(ProjectorEntity entity) {
         return new Projector(
                 entity.getId(),
                 entity.getBrand(),
                 entity.getModel(),
+                entity.getSerialNumber(),
                 entity.getAssetTag(),
-                entity.getStatus());
+                entity.getStatus(),
+                entity.getReservedRegistrationNumber(),
+                entity.getDefectDescription());
     }
 }

@@ -17,6 +17,10 @@ public class UpdateKeyUseCase {
 
         existing.setRoom(updatedData.getRoom());
         existing.setBlock(updatedData.getBlock());
+        existing.setSpareKey(updatedData.isSpareKey());
+        if (updatedData.getAssetTag() != null) {
+            existing.setAssetTag(updatedData.getAssetTag());
+        }
 
         if (existing.getRoom() == null || existing.getBlock() == null) {
             throw new RuntimeException("Room and block are required.");
