@@ -74,6 +74,37 @@ Professor                    System                         Attendant
 | `ConfirmLoanUseCase` | Attendant | UC03 — validate code, close reservation, open loan |
 | `CancelReservationUseCase` | Professor | UC11 alt — cancel own open reservation |
 
+## Presentation layer (Sprint 1)
+
+```
+com.gac.api.presentation
+├── controller/     AuthController, UserController
+├── dto/request/    LoginRequest, ChangePasswordRequest
+├── dto/response/   LoginResponse, UserResponse
+├── mapper/         UserMapper
+└── exception/      GlobalExceptionHandler, ApiErrorResponse
+```
+
+### Security
+- Stateless JWT (`Authorization: Bearer <token>`)
+- BCrypt password hashing via `PasswordHasher` port
+- `@PreAuthorize` on protected routes
+
+### API endpoints
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| POST | `/api/auth/login` | Public | Login with registration number + password |
+| GET | `/api/users/me` | JWT | Current user profile |
+| PATCH | `/api/users/me/password` | JWT | Change password (UC18) |
+
+### Dev seed user
+| Registration | Password | Role |
+|--------------|----------|------|
+| `admin` | `admin123` | ADMIN |
+
+Configure JWT in `application.properties`: `gac.jwt.secret`, `gac.jwt.expiration-ms`.
+
 ## Local run
 
 ```bash
@@ -81,3 +112,11 @@ Professor                    System                         Attendant
 ```
 
 H2 console: http://localhost:8080/h2-console (JDBC URL `jdbc:h2:mem:gac`)
+
+### Example login
+
+```bash
+curl -s -X POST http://localhost:8080/api/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"registrationNumber":"admin","password":"admin123"}'
+```

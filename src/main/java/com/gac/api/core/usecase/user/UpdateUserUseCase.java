@@ -1,6 +1,7 @@
 package com.gac.api.core.usecase.user;
 
 import com.gac.api.core.domain.User;
+import com.gac.api.core.exception.NotFoundException;
 import com.gac.api.core.gateway.UserGateway;
 
 public class UpdateUserUseCase {
@@ -12,8 +13,7 @@ public class UpdateUserUseCase {
     }
 
     public User execute(Long id, User updatedData) {
-        User existing = userGateway.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found."));
+        User existing = userGateway.findById(id).orElseThrow(() -> new NotFoundException("User not found."));
 
         existing.setName(updatedData.getName());
         existing.setEmail(updatedData.getEmail());

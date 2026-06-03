@@ -1,5 +1,6 @@
 package com.gac.api.infrastructure.configuration;
 
+import com.gac.api.core.gateway.PasswordHasher;
 import com.gac.api.core.gateway.UserGateway;
 import com.gac.api.core.usecase.user.CreateUserUseCase;
 import com.gac.api.core.usecase.user.DeleteUserUseCase;
@@ -12,8 +13,8 @@ import org.springframework.context.annotation.Configuration;
 public class UserConfig {
 
     @Bean
-    public CreateUserUseCase createUserUseCase(UserGateway gateway) {
-        return new CreateUserUseCase(gateway);
+    public CreateUserUseCase createUserUseCase(UserGateway gateway, PasswordHasher passwordHasher) {
+        return new CreateUserUseCase(gateway, passwordHasher);
     }
 
     @Bean
