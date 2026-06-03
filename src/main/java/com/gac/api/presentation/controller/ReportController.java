@@ -4,6 +4,7 @@ import com.gac.api.core.usecase.movement.GenerateMovementReportUseCase;
 import com.gac.api.presentation.dto.response.MovementReportResponse;
 import com.gac.api.presentation.mapper.MovementMapper;
 import com.gac.api.presentation.mapper.MovementReportCsvMapper;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/reports")
+@Tag(name = "Reports", description = "Movement reports and export (UC06, RF11)")
 public class ReportController {
 
     private final GenerateMovementReportUseCase generateMovementReportUseCase;

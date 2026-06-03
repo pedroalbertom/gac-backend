@@ -7,6 +7,7 @@ import com.gac.api.infrastructure.security.JwtUserPrincipal;
 import com.gac.api.presentation.dto.request.CreateReservationRequest;
 import com.gac.api.presentation.dto.response.MovementResponse;
 import com.gac.api.presentation.mapper.MovementMapper;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/reservations")
+@Tag(name = "Reservations", description = "Professor reservations (UC11, RF13)")
 public class ReservationController {
 
     private final CreateReservationUseCase createReservationUseCase;

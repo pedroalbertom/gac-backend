@@ -15,6 +15,7 @@ import com.gac.api.presentation.dto.response.MovementResponse;
 import com.gac.api.presentation.dto.response.PendencyResponse;
 import com.gac.api.presentation.mapper.MovementMapper;
 import com.gac.api.presentation.mapper.PendencyMapper;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/movements")
+@Tag(name = "Movements", description = "Loans, returns, exchanges, and pendencies (UC03, UC04, UC05, UC12)")
 public class MovementController {
 
     private final ConfirmLoanUseCase confirmLoanUseCase;

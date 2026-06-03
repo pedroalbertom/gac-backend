@@ -6,6 +6,9 @@ import com.gac.api.infrastructure.security.JwtService;
 import com.gac.api.presentation.dto.request.LoginRequest;
 import com.gac.api.presentation.dto.response.LoginResponse;
 import com.gac.api.presentation.mapper.UserMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Authentication", description = "Login and JWT issuance (RF01)")
 public class AuthController {
 
     private final AuthenticateUserUseCase authenticateUserUseCase;
@@ -26,6 +30,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Authenticate user and obtain JWT")
+    @SecurityRequirements
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         User user = authenticateUserUseCase.execute(request.registrationNumber(), request.password());
         String token = jwtService.generateToken(user);

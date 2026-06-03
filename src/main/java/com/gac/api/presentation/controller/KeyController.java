@@ -9,6 +9,7 @@ import com.gac.api.presentation.dto.request.CreateKeyRequest;
 import com.gac.api.presentation.dto.request.UpdateKeyRequest;
 import com.gac.api.presentation.dto.response.KeyResponse;
 import com.gac.api.presentation.mapper.KeyMapper;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/keys")
+@Tag(name = "Keys", description = "Key CRUD and spare keys (UC08, UC10, UC13, UC14)")
 public class KeyController {
 
     private final CreateKeyUseCase createKeyUseCase;

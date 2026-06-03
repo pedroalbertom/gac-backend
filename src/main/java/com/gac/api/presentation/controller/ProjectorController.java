@@ -9,6 +9,7 @@ import com.gac.api.presentation.dto.request.CreateProjectorRequest;
 import com.gac.api.presentation.dto.request.UpdateProjectorRequest;
 import com.gac.api.presentation.dto.response.ProjectorResponse;
 import com.gac.api.presentation.mapper.ProjectorMapper;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/projectors")
+@Tag(name = "Projectors", description = "Projector CRUD (UC08, UC13, UC14)")
 public class ProjectorController {
 
     private final CreateProjectorUseCase createProjectorUseCase;

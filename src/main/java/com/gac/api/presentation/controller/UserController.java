@@ -13,6 +13,7 @@ import com.gac.api.presentation.dto.request.CreateStaffUserRequest;
 import com.gac.api.presentation.dto.request.UpdateUserRequest;
 import com.gac.api.presentation.dto.response.UserResponse;
 import com.gac.api.presentation.mapper.UserMapper;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/users")
+@Tag(name = "Users", description = "Staff user management and profile (UC01, UC18)")
 public class UserController {
 
     private final GetUserByIdUseCase getUserByIdUseCase;

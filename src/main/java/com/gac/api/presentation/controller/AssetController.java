@@ -10,6 +10,7 @@ import com.gac.api.core.usecase.key.ListKeysUseCase;
 import com.gac.api.core.usecase.projector.ListProjectorsUseCase;
 import com.gac.api.presentation.dto.response.AssetItemResponse;
 import com.gac.api.presentation.mapper.PendencyMapper;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/assets")
+@Tag(name = "Assets", description = "Unified inventory, search, and maintenance release (UC07, UC09, UC15)")
 public class AssetController {
 
     private final ListProjectorsUseCase listProjectorsUseCase;
