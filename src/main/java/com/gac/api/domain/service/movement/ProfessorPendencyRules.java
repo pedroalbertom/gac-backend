@@ -5,7 +5,7 @@ import com.gac.api.domain.model.MovementStatus;
 import com.gac.api.domain.model.MovementType;
 import com.gac.api.domain.model.Pendency;
 import com.gac.api.domain.model.PendencyType;
-import com.gac.api.domain.port.MovementGateway;
+import com.gac.api.application.repository.MovementRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ public final class ProfessorPendencyRules {
     private ProfessorPendencyRules() {
     }
 
-    public static List<Pendency> findPendencies(String professorRegistrationNumber, MovementGateway movementGateway) {
+    public static List<Pendency> findPendencies(String professorRegistrationNumber, MovementRepository movementGateway) {
         LocalDateTime now = LocalDateTime.now();
         List<Pendency> pendencies = new ArrayList<>();
 
@@ -45,7 +45,7 @@ public final class ProfessorPendencyRules {
     }
 
     public static boolean hasBlockingPendency(
-            String professorRegistrationNumber, MovementGateway movementGateway, Long excludeMovementId) {
+            String professorRegistrationNumber, MovementRepository movementGateway, Long excludeMovementId) {
         return findPendencies(professorRegistrationNumber, movementGateway).stream()
                 .filter(p -> excludeMovementId == null || !excludeMovementId.equals(p.getMovementId()))
                 .findAny()

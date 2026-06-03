@@ -6,8 +6,8 @@ import com.gac.api.domain.model.AssetType;
 import com.gac.api.domain.model.ItemStatus;
 import com.gac.api.domain.model.Key;
 import com.gac.api.domain.model.Projector;
-import com.gac.api.domain.port.KeyGateway;
-import com.gac.api.domain.port.ProjectorGateway;
+import com.gac.api.application.repository.KeyRepository;
+import com.gac.api.application.repository.ProjectorRepository;
 
 public final class AssetInventory {
 
@@ -15,7 +15,7 @@ public final class AssetInventory {
     }
 
     public static void requireAvailable(
-            AssetType assetType, Long assetId, ProjectorGateway projectorGateway, KeyGateway keyGateway) {
+            AssetType assetType, Long assetId, ProjectorRepository projectorGateway, KeyRepository keyGateway) {
         ItemStatus status = getStatus(assetType, assetId, projectorGateway, keyGateway);
         if (status != ItemStatus.AVAILABLE) {
             throw new BusinessRuleException("Asset must be available to reserve.");
@@ -26,8 +26,8 @@ public final class AssetInventory {
             AssetType assetType,
             Long assetId,
             String professorRegistrationNumber,
-            ProjectorGateway projectorGateway,
-            KeyGateway keyGateway) {
+            ProjectorRepository projectorGateway,
+            KeyRepository keyGateway) {
         if (assetType == AssetType.PROJECTOR) {
             Projector projector = projectorGateway
                     .findById(assetId)
@@ -50,8 +50,8 @@ public final class AssetInventory {
             AssetType assetType,
             Long assetId,
             String professorRegistrationNumber,
-            ProjectorGateway projectorGateway,
-            KeyGateway keyGateway) {
+            ProjectorRepository projectorGateway,
+            KeyRepository keyGateway) {
         if (assetType == AssetType.PROJECTOR) {
             Projector projector = projectorGateway
                     .findById(assetId)
@@ -69,7 +69,7 @@ public final class AssetInventory {
     }
 
     public static void markOnLoan(
-            AssetType assetType, Long assetId, ProjectorGateway projectorGateway, KeyGateway keyGateway) {
+            AssetType assetType, Long assetId, ProjectorRepository projectorGateway, KeyRepository keyGateway) {
         if (assetType == AssetType.PROJECTOR) {
             Projector projector = projectorGateway
                     .findById(assetId)
@@ -90,8 +90,8 @@ public final class AssetInventory {
             AssetType assetType,
             Long assetId,
             String defectDescription,
-            ProjectorGateway projectorGateway,
-            KeyGateway keyGateway) {
+            ProjectorRepository projectorGateway,
+            KeyRepository keyGateway) {
         if (assetType == AssetType.PROJECTOR) {
             Projector projector = projectorGateway
                     .findById(assetId)
@@ -111,7 +111,7 @@ public final class AssetInventory {
     }
 
     public static void releaseFromMaintenance(
-            AssetType assetType, Long assetId, ProjectorGateway projectorGateway, KeyGateway keyGateway) {
+            AssetType assetType, Long assetId, ProjectorRepository projectorGateway, KeyRepository keyGateway) {
         if (assetType == AssetType.PROJECTOR) {
             Projector projector = projectorGateway
                     .findById(assetId)
@@ -137,7 +137,7 @@ public final class AssetInventory {
     }
 
     public static void markAvailable(
-            AssetType assetType, Long assetId, ProjectorGateway projectorGateway, KeyGateway keyGateway) {
+            AssetType assetType, Long assetId, ProjectorRepository projectorGateway, KeyRepository keyGateway) {
         if (assetType == AssetType.PROJECTOR) {
             Projector projector = projectorGateway
                     .findById(assetId)
@@ -157,7 +157,7 @@ public final class AssetInventory {
     }
 
     private static ItemStatus getStatus(
-            AssetType assetType, Long assetId, ProjectorGateway projectorGateway, KeyGateway keyGateway) {
+            AssetType assetType, Long assetId, ProjectorRepository projectorGateway, KeyRepository keyGateway) {
         if (assetType == AssetType.PROJECTOR) {
             return projectorGateway
                     .findById(assetId)
