@@ -26,8 +26,10 @@ public class GenerateMovementReportUseCase {
         LocalDateTime start = from.atStartOfDay();
         LocalDateTime end = to.atTime(23, 59, 59);
 
-        var movements = movementGateway.findByCreatedAtBetween(start, end).stream()
-                .sorted(Comparator.comparing(Movement::getCreatedAt, Comparator.nullsFirst(Comparator.naturalOrder()))
+        var movements = movementGateway.findInPeriod(start, end).stream()
+                .sorted(Comparator.comparing(
+                                Movement::eventAt,
+                                Comparator.nullsFirst(Comparator.naturalOrder()))
                         .thenComparing(Movement::getId, Comparator.nullsFirst(Comparator.naturalOrder())))
                 .toList();
 

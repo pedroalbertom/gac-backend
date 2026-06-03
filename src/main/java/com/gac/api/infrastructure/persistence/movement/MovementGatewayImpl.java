@@ -85,6 +85,13 @@ public class MovementGatewayImpl implements MovementGateway {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Movement> findInPeriod(LocalDateTime start, LocalDateTime end) {
+        return repository.findInPeriod(start, end).stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
     private MovementEntity toEntity(Movement movement) {
         UserEntity attendantEntity = null;
         if (movement.getAttendantId() != null) {

@@ -153,4 +153,14 @@ public class Movement {
     public void setReturnedAccessories(List<String> returnedAccessories) {
         this.returnedAccessories = returnedAccessories != null ? returnedAccessories : new ArrayList<>();
     }
+
+    public LocalDateTime eventAt() {
+        if (returnedAt != null) {
+            return returnedAt;
+        }
+        if (checkedOutAt != null) {
+            return checkedOutAt;
+        }
+        return createdAt;
+    }
 }

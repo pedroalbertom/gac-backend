@@ -27,4 +27,6 @@ public interface MovementGateway {
     List<Movement> findByTypeAndStatus(MovementType type, MovementStatus status);
 
     List<Movement> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+
+    List<Movement> findInPeriod(LocalDateTime start, LocalDateTime end);
 }
