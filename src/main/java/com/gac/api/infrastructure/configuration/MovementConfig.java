@@ -10,6 +10,8 @@ import com.gac.api.core.usecase.movement.FindMovementsByProfessorUseCase;
 import com.gac.api.core.usecase.movement.ListActiveLoansUseCase;
 import com.gac.api.core.usecase.movement.ListOpenReservationsUseCase;
 import com.gac.api.core.usecase.movement.ExchangeAssetUseCase;
+import com.gac.api.core.usecase.movement.ExpireReservationsUseCase;
+import com.gac.api.core.usecase.movement.GenerateMovementReportUseCase;
 import com.gac.api.core.usecase.movement.FindProfessorPendenciesUseCase;
 import com.gac.api.core.usecase.movement.RegisterReturnUseCase;
 import com.gac.api.core.usecase.movement.ReleaseFromMaintenanceUseCase;
@@ -73,5 +75,16 @@ public class MovementConfig {
     public ReleaseFromMaintenanceUseCase releaseFromMaintenanceUseCase(
             ProjectorGateway projectorGateway, KeyGateway keyGateway) {
         return new ReleaseFromMaintenanceUseCase(projectorGateway, keyGateway);
+    }
+
+    @Bean
+    public GenerateMovementReportUseCase generateMovementReportUseCase(MovementGateway movementGateway) {
+        return new GenerateMovementReportUseCase(movementGateway);
+    }
+
+    @Bean
+    public ExpireReservationsUseCase expireReservationsUseCase(
+            MovementGateway movementGateway, ProjectorGateway projectorGateway, KeyGateway keyGateway) {
+        return new ExpireReservationsUseCase(movementGateway, projectorGateway, keyGateway);
     }
 }

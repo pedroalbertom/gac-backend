@@ -64,4 +64,9 @@ public class MovementEntity {
     @CollectionTable(name = "movement_loaned_accessories", joinColumns = @JoinColumn(name = "movement_id"))
     @Column(name = "accessory")
     private List<String> loanedAccessories = new ArrayList<>();
+
+    @ElementCollection
+    @CollectionTable(name = "movement_returned_accessories", joinColumns = @JoinColumn(name = "movement_id"))
+    @Column(name = "accessory")
+    private List<String> returnedAccessories = new ArrayList<>();
 }

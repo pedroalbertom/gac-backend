@@ -21,5 +21,6 @@ public record MovementResponse(
         LocalDateTime checkedOutAt,
         LocalDateTime returnedAt,
         LocalDateTime createdAt,
-        List<String> loanedAccessories) {
+        List<String> loanedAccessories,
+        List<String> returnedAccessories) {
 }

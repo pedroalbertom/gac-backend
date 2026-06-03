@@ -4,6 +4,7 @@ import com.gac.api.core.domain.AssetType;
 import com.gac.api.core.domain.Movement;
 import com.gac.api.core.domain.MovementStatus;
 import com.gac.api.core.domain.MovementType;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,4 +25,6 @@ public interface MovementGateway {
     long countActiveByProfessorAndAssetType(String registrationNumber, AssetType assetType);
 
     List<Movement> findByTypeAndStatus(MovementType type, MovementStatus status);
+
+    List<Movement> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 }

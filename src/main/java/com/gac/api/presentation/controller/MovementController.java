@@ -77,7 +77,11 @@ public class MovementController {
             @AuthenticationPrincipal JwtUserPrincipal principal, @Valid @RequestBody ReturnRequest request) {
         var attendant = getUserByIdUseCase.execute(principal.userId());
         var returnMovement = registerReturnUseCase.execute(
-                request.loanId(), attendant, request.hasDefect(), request.defectDescription());
+                request.loanId(),
+                attendant,
+                request.hasDefect(),
+                request.defectDescription(),
+                request.returnedAccessories());
         URI location = URI.create("/api/movements/" + returnMovement.getId());
         return ResponseEntity.created(location).body(MovementMapper.toResponse(returnMovement));
     }

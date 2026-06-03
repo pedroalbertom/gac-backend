@@ -1,0 +1,36 @@
+package com.gac.api.core.usecase.movement;
+
+import com.gac.api.core.domain.Movement;
+import com.gac.api.core.domain.MovementReport;
+import com.gac.api.core.gateway.MovementGateway;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Comparator;
+
+public class GenerateMovementReportUseCase {
+
+    private final MovementGateway movementGateway;
+
+    public GenerateMovementReportUseCase(MovementGateway movementGateway) {
+        this.movementGateway = movementGateway;
+    }
+
+    public MovementReport execute(LocalDate from, LocalDate to) {
+        if (from == null || to == null) {
+            throw new RuntimeException("Report period start and end dates are required.");
+        }
+        if (from.isAfter(to)) {
+            throw new RuntimeException("Report start date must be on or before end date.");
+        }
+
+        LocalDateTime start = from.atStartOfDay();
+        LocalDateTime end = to.atTime(23, 59, 59);
+
+        var movements = movementGateway.findByCreatedAtBetween(start, end).stream()
+                .sorted(Comparator.comparing(Movement::getCreatedAt, Comparator.nullsFirst(Comparator.naturalOrder()))
+                        .thenComparing(Movement::getId, Comparator.nullsFirst(Comparator.naturalOrder())))
+                .toList();
+
+        return new MovementReport(from, to, movements);
+    }
+}

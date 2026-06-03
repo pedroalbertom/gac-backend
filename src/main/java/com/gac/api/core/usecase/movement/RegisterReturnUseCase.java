@@ -8,6 +8,7 @@ import com.gac.api.core.gateway.KeyGateway;
 import com.gac.api.core.gateway.MovementGateway;
 import com.gac.api.core.gateway.ProjectorGateway;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class RegisterReturnUseCase {
 
@@ -22,7 +23,12 @@ public class RegisterReturnUseCase {
         this.keyGateway = keyGateway;
     }
 
-    public Movement execute(Long loanId, User attendant, boolean hasDefect, String defectDescription) {
+    public Movement execute(
+            Long loanId,
+            User attendant,
+            boolean hasDefect,
+            String defectDescription,
+            List<String> returnedAccessories) {
         Movement loan = movementGateway
                 .findById(loanId)
                 .orElseThrow(() -> new RuntimeException("Loan not found."));
@@ -34,6 +40,9 @@ public class RegisterReturnUseCase {
         if (hasDefect && (defectDescription == null || defectDescription.isBlank())) {
             throw new RuntimeException("Defect description is required when item has a defect.");
         }
+
+        List<String> confirmedAccessories = LoanAccessoryRules.requireMatchingReturn(
+                loan.getAssetType(), loan.getLoanedAccessories(), returnedAccessories);
 
         LocalDateTime now = LocalDateTime.now();
         loan.setStatus(MovementStatus.COMPLETED);
@@ -50,6 +59,7 @@ public class RegisterReturnUseCase {
         returnMovement.setAcademicPurpose(loan.getAcademicPurpose());
         returnMovement.setRoom(loan.getRoom());
         returnMovement.setLoanedAccessories(loan.getLoanedAccessories());
+        returnMovement.setReturnedAccessories(confirmedAccessories);
         returnMovement.setReturnedAt(now);
         returnMovement.setCreatedAt(now);
 

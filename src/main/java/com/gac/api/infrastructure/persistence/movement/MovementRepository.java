@@ -3,6 +3,7 @@ package com.gac.api.infrastructure.persistence.movement;
 import com.gac.api.core.domain.AssetType;
 import com.gac.api.core.domain.MovementStatus;
 import com.gac.api.core.domain.MovementType;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +25,6 @@ public interface MovementRepository extends JpaRepository<MovementEntity, Long> 
             Collection<MovementType> types);
 
     List<MovementEntity> findByTypeAndStatus(MovementType type, MovementStatus status);
+
+    List<MovementEntity> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 }

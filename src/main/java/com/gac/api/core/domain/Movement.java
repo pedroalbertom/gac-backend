@@ -21,6 +21,7 @@ public class Movement {
     private LocalDateTime returnedAt;
     private LocalDateTime createdAt;
     private List<String> loanedAccessories = new ArrayList<>();
+    private List<String> returnedAccessories = new ArrayList<>();
 
     public Movement() {
     }
@@ -143,5 +144,13 @@ public class Movement {
 
     public void setLoanedAccessories(List<String> loanedAccessories) {
         this.loanedAccessories = loanedAccessories != null ? loanedAccessories : new ArrayList<>();
+    }
+
+    public List<String> getReturnedAccessories() {
+        return returnedAccessories;
+    }
+
+    public void setReturnedAccessories(List<String> returnedAccessories) {
+        this.returnedAccessories = returnedAccessories != null ? returnedAccessories : new ArrayList<>();
     }
 }

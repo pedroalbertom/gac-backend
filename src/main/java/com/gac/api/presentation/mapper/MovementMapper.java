@@ -24,6 +24,7 @@ public final class MovementMapper {
                 movement.getCheckedOutAt(),
                 movement.getReturnedAt(),
                 movement.getCreatedAt(),
-                movement.getLoanedAccessories());
+                movement.getLoanedAccessories(),
+                movement.getReturnedAccessories());
     }
 }

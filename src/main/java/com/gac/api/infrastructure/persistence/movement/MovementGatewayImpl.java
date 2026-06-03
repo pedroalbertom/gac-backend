@@ -7,6 +7,7 @@ import com.gac.api.core.domain.MovementType;
 import com.gac.api.core.gateway.MovementGateway;
 import com.gac.api.infrastructure.persistence.user.UserEntity;
 import com.gac.api.infrastructure.persistence.user.UserRepository;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -77,6 +78,13 @@ public class MovementGatewayImpl implements MovementGateway {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Movement> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end) {
+        return repository.findByCreatedAtBetween(start, end).stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
     private MovementEntity toEntity(Movement movement) {
         UserEntity attendantEntity = null;
         if (movement.getAttendantId() != null) {
@@ -104,6 +112,10 @@ public class MovementGatewayImpl implements MovementGateway {
                 movement.getLoanedAccessories() != null
                         ? new ArrayList<>(movement.getLoanedAccessories())
                         : new ArrayList<>());
+        entity.setReturnedAccessories(
+                movement.getReturnedAccessories() != null
+                        ? new ArrayList<>(movement.getReturnedAccessories())
+                        : new ArrayList<>());
         return entity;
     }
 
@@ -128,6 +140,10 @@ public class MovementGatewayImpl implements MovementGateway {
         movement.setLoanedAccessories(
                 entity.getLoanedAccessories() != null
                         ? new ArrayList<>(entity.getLoanedAccessories())
+                        : new ArrayList<>());
+        movement.setReturnedAccessories(
+                entity.getReturnedAccessories() != null
+                        ? new ArrayList<>(entity.getReturnedAccessories())
                         : new ArrayList<>());
         return movement;
     }
