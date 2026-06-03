@@ -24,6 +24,10 @@ public class CreateReservationUseCase {
 
     public Movement execute(
             String professorRegistrationNumber, AssetType assetType, Long assetId, String academicPurpose) {
+        if (ProfessorPendencyRules.hasBlockingPendency(professorRegistrationNumber, movementGateway, null)) {
+            throw new RuntimeException("Professor has pending issues and cannot reserve (RN05).");
+        }
+
         if (movementGateway.countActiveByProfessorAndAssetType(professorRegistrationNumber, assetType) >= 1) {
             throw new RuntimeException("Professor already has an active reservation or loan for this asset type.");
         }

@@ -41,6 +41,11 @@ public class ConfirmLoanUseCase {
             throw new RuntimeException("Invalid confirmation code.");
         }
 
+        if (ProfessorPendencyRules.hasBlockingPendency(
+                reservation.getProfessorRegistrationNumber(), movementGateway, null)) {
+            throw new RuntimeException("Professor has pending issues and cannot borrow (RN05).");
+        }
+
         AssetInventory.requireReservedForProfessor(
                 reservation.getAssetType(),
                 reservation.getAssetId(),

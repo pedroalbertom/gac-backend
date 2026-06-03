@@ -106,6 +106,32 @@ final class AssetInventory {
         keyGateway.save(key);
     }
 
+    static void releaseFromMaintenance(
+            AssetType assetType, Long assetId, ProjectorGateway projectorGateway, KeyGateway keyGateway) {
+        if (assetType == AssetType.PROJECTOR) {
+            Projector projector = projectorGateway
+                    .findById(assetId)
+                    .orElseThrow(() -> new RuntimeException("Projector not found."));
+            if (projector.getStatus() != ItemStatus.MAINTENANCE) {
+                throw new RuntimeException("Asset is not in maintenance.");
+            }
+            projector.setStatus(ItemStatus.AVAILABLE);
+            projector.setReservedRegistrationNumber(null);
+            projector.setDefectDescription(null);
+            projectorGateway.save(projector);
+            return;
+        }
+
+        Key key = keyGateway.findById(assetId).orElseThrow(() -> new RuntimeException("Key not found."));
+        if (key.getStatus() != ItemStatus.MAINTENANCE) {
+            throw new RuntimeException("Asset is not in maintenance.");
+        }
+        key.setStatus(ItemStatus.AVAILABLE);
+        key.setReservedRegistrationNumber(null);
+        key.setDefectDescription(null);
+        keyGateway.save(key);
+    }
+
     static void markAvailable(AssetType assetType, Long assetId, ProjectorGateway projectorGateway, KeyGateway keyGateway) {
         if (assetType == AssetType.PROJECTOR) {
             Projector projector = projectorGateway
@@ -113,6 +139,7 @@ final class AssetInventory {
                     .orElseThrow(() -> new RuntimeException("Projector not found."));
             projector.setStatus(ItemStatus.AVAILABLE);
             projector.setReservedRegistrationNumber(null);
+            projector.setDefectDescription(null);
             projectorGateway.save(projector);
             return;
         }
@@ -120,6 +147,7 @@ final class AssetInventory {
         Key key = keyGateway.findById(assetId).orElseThrow(() -> new RuntimeException("Key not found."));
         key.setStatus(ItemStatus.AVAILABLE);
         key.setReservedRegistrationNumber(null);
+        key.setDefectDescription(null);
         keyGateway.save(key);
     }
 

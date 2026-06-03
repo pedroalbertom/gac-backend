@@ -9,9 +9,10 @@ import com.gac.api.core.usecase.movement.CreateReservationUseCase;
 import com.gac.api.core.usecase.movement.FindMovementsByProfessorUseCase;
 import com.gac.api.core.usecase.movement.ListActiveLoansUseCase;
 import com.gac.api.core.usecase.movement.ListOpenReservationsUseCase;
-import com.gac.api.core.usecase.movement.ListMovementsUseCase;
+import com.gac.api.core.usecase.movement.ExchangeAssetUseCase;
+import com.gac.api.core.usecase.movement.FindProfessorPendenciesUseCase;
 import com.gac.api.core.usecase.movement.RegisterReturnUseCase;
-import com.gac.api.core.usecase.movement.UpdateMovementUseCase;
+import com.gac.api.core.usecase.movement.ReleaseFromMaintenanceUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -37,16 +38,6 @@ public class MovementConfig {
     }
 
     @Bean
-    public ListMovementsUseCase listMovementsUseCase(MovementGateway gateway) {
-        return new ListMovementsUseCase(gateway);
-    }
-
-    @Bean
-    public UpdateMovementUseCase updateMovementUseCase(MovementGateway gateway) {
-        return new UpdateMovementUseCase(gateway);
-    }
-
-    @Bean
     public FindMovementsByProfessorUseCase findMovementsByProfessorUseCase(MovementGateway gateway) {
         return new FindMovementsByProfessorUseCase(gateway);
     }
@@ -65,5 +56,22 @@ public class MovementConfig {
     @Bean
     public ListOpenReservationsUseCase listOpenReservationsUseCase(MovementGateway gateway) {
         return new ListOpenReservationsUseCase(gateway);
+    }
+
+    @Bean
+    public ExchangeAssetUseCase exchangeAssetUseCase(
+            MovementGateway movementGateway, ProjectorGateway projectorGateway, KeyGateway keyGateway) {
+        return new ExchangeAssetUseCase(movementGateway, projectorGateway, keyGateway);
+    }
+
+    @Bean
+    public FindProfessorPendenciesUseCase findProfessorPendenciesUseCase(MovementGateway gateway) {
+        return new FindProfessorPendenciesUseCase(gateway);
+    }
+
+    @Bean
+    public ReleaseFromMaintenanceUseCase releaseFromMaintenanceUseCase(
+            ProjectorGateway projectorGateway, KeyGateway keyGateway) {
+        return new ReleaseFromMaintenanceUseCase(projectorGateway, keyGateway);
     }
 }
