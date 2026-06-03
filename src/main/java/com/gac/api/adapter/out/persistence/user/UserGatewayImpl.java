@@ -1,7 +1,7 @@
 package com.gac.api.adapter.out.persistence.user;
 
 import com.gac.api.domain.model.User;
-import com.gac.api.application.port.out.UserGateway;
+import com.gac.api.domain.port.UserGateway;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Component;

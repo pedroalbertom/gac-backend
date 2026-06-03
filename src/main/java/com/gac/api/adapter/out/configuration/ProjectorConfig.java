@@ -1,6 +1,6 @@
 package com.gac.api.adapter.out.configuration;
 
-import com.gac.api.application.port.out.ProjectorGateway;
+import com.gac.api.domain.port.ProjectorGateway;
 import com.gac.api.application.port.in.projector.CreateProjectorInputPort;
 import com.gac.api.application.port.in.projector.DeleteProjectorInputPort;
 import com.gac.api.application.port.in.projector.GetProjectorByIdInputPort;

@@ -4,7 +4,7 @@ import com.gac.api.application.port.in.user.GetUserByIdInputPort;
 
 import com.gac.api.domain.model.User;
 import com.gac.api.domain.exception.NotFoundException;
-import com.gac.api.application.port.out.UserGateway;
+import com.gac.api.domain.port.UserGateway;
 
 public class GetUserByIdUseCase implements GetUserByIdInputPort {
 

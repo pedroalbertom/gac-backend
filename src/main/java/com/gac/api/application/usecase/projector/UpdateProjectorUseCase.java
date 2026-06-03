@@ -4,7 +4,7 @@ import com.gac.api.application.port.in.projector.UpdateProjectorInputPort;
 
 import com.gac.api.domain.model.Projector;
 import com.gac.api.domain.exception.NotFoundException;
-import com.gac.api.application.port.out.ProjectorGateway;
+import com.gac.api.domain.port.ProjectorGateway;
 
 public class UpdateProjectorUseCase implements UpdateProjectorInputPort {
 

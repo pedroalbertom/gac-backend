@@ -5,7 +5,7 @@ import com.gac.api.application.port.in.user.UpdateUserInputPort;
 import com.gac.api.domain.model.User;
 import com.gac.api.domain.exception.ConflictException;
 import com.gac.api.domain.exception.NotFoundException;
-import com.gac.api.application.port.out.UserGateway;
+import com.gac.api.domain.port.UserGateway;
 
 public class UpdateUserUseCase implements UpdateUserInputPort {
 

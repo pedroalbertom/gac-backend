@@ -1,15 +1,17 @@
 package com.gac.api.application.usecase.movement;
 
+import com.gac.api.application.dto.movement.CancelReservationCommand;
+import com.gac.api.application.dto.movement.MovementResult;
 import com.gac.api.application.port.in.movement.CancelReservationInputPort;
-
-import com.gac.api.domain.service.movement.*;
-
+import com.gac.api.domain.exception.BusinessRuleException;
+import com.gac.api.domain.exception.NotFoundException;
 import com.gac.api.domain.model.Movement;
 import com.gac.api.domain.model.MovementStatus;
 import com.gac.api.domain.model.MovementType;
-import com.gac.api.application.port.out.KeyGateway;
-import com.gac.api.application.port.out.MovementGateway;
-import com.gac.api.application.port.out.ProjectorGateway;
+import com.gac.api.domain.port.KeyGateway;
+import com.gac.api.domain.port.MovementGateway;
+import com.gac.api.domain.port.ProjectorGateway;
+import com.gac.api.domain.service.movement.AssetInventory;
 
 public class CancelReservationUseCase implements CancelReservationInputPort {
 
@@ -24,17 +26,18 @@ public class CancelReservationUseCase implements CancelReservationInputPort {
         this.keyGateway = keyGateway;
     }
 
-    public Movement execute(Long reservationId, String professorRegistrationNumber) {
+    @Override
+    public MovementResult execute(CancelReservationCommand command) {
         Movement reservation = movementGateway
-                .findById(reservationId)
-                .orElseThrow(() -> new RuntimeException("Reservation not found."));
+                .findById(command.reservationId())
+                .orElseThrow(() -> new NotFoundException("Reservation not found."));
 
         if (reservation.getType() != MovementType.RESERVATION || reservation.getStatus() != MovementStatus.OPEN) {
-            throw new RuntimeException("Movement is not an open reservation.");
+            throw new BusinessRuleException("Movement is not an open reservation.");
         }
 
-        if (!professorRegistrationNumber.equals(reservation.getProfessorRegistrationNumber())) {
-            throw new RuntimeException("Reservation does not belong to this professor.");
+        if (!command.professorRegistrationNumber().equals(reservation.getProfessorRegistrationNumber())) {
+            throw new BusinessRuleException("Reservation does not belong to this professor.");
         }
 
         reservation.setStatus(MovementStatus.CANCELLED);
@@ -43,6 +46,6 @@ public class CancelReservationUseCase implements CancelReservationInputPort {
         AssetInventory.markAvailable(
                 reservation.getAssetType(), reservation.getAssetId(), projectorGateway, keyGateway);
 
-        return reservation;
+        return MovementResult.from(reservation);
     }
 }

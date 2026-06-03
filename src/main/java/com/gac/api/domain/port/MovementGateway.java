@@ -1,4 +1,4 @@
-package com.gac.api.application.port.out;
+package com.gac.api.domain.port;
 
 import com.gac.api.domain.model.AssetType;
 import com.gac.api.domain.model.Movement;
@@ -8,6 +8,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Outbound port: persistence and queries for movements (implemented by adapter.out.persistence).
+ */
 public interface MovementGateway {
 
     Movement save(Movement movement);

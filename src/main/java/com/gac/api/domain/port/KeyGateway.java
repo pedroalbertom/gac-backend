@@ -1,4 +1,4 @@
-package com.gac.api.application.port.out;
+package com.gac.api.domain.port;
 
 import com.gac.api.domain.model.Key;
 import java.util.List;

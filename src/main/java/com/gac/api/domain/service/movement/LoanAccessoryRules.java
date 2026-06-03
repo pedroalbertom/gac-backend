@@ -1,5 +1,6 @@
 package com.gac.api.domain.service.movement;
 
+import com.gac.api.domain.exception.BusinessRuleException;
 import com.gac.api.domain.model.AssetType;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,7 +20,7 @@ public final class LoanAccessoryRules {
         }
 
         if (returnedAccessories == null || returnedAccessories.isEmpty()) {
-            throw new RuntimeException("Returned accessories are required for projector loans with accessories.");
+            throw new BusinessRuleException("Returned accessories are required for projector loans with accessories.");
         }
 
         Set<String> expected = normalize(loanedAccessories);
@@ -28,10 +29,10 @@ public final class LoanAccessoryRules {
         if (!expected.equals(returned)) {
             for (String accessory : expected) {
                 if (!returned.contains(accessory)) {
-                    throw new RuntimeException("Missing returned accessory: " + accessoryLabel(loanedAccessories, accessory));
+                    throw new BusinessRuleException("Missing returned accessory: " + accessoryLabel(loanedAccessories, accessory));
                 }
             }
-            throw new RuntimeException("Returned accessories do not match loaned accessories.");
+            throw new BusinessRuleException("Returned accessories do not match loaned accessories.");
         }
 
         return new ArrayList<>(returnedAccessories);

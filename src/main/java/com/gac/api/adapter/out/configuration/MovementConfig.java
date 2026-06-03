@@ -1,8 +1,8 @@
 package com.gac.api.adapter.out.configuration;
 
-import com.gac.api.application.port.out.KeyGateway;
-import com.gac.api.application.port.out.MovementGateway;
-import com.gac.api.application.port.out.ProjectorGateway;
+import com.gac.api.domain.port.KeyGateway;
+import com.gac.api.domain.port.MovementGateway;
+import com.gac.api.domain.port.ProjectorGateway;
 import com.gac.api.application.port.in.movement.CancelReservationInputPort;
 import com.gac.api.application.port.in.movement.ConfirmLoanInputPort;
 import com.gac.api.application.port.in.movement.CreateReservationInputPort;

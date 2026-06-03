@@ -4,7 +4,7 @@ import com.gac.api.application.port.in.user.ListProfessorsInputPort;
 
 import com.gac.api.domain.model.Role;
 import com.gac.api.domain.model.User;
-import com.gac.api.application.port.out.UserGateway;
+import com.gac.api.domain.port.UserGateway;
 import java.util.List;
 
 public class ListProfessorsUseCase implements ListProfessorsInputPort {

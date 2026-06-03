@@ -1,16 +1,18 @@
 package com.gac.api.application.usecase.movement;
 
+import com.gac.api.application.dto.movement.CreateReservationCommand;
+import com.gac.api.application.dto.movement.MovementResult;
 import com.gac.api.application.port.in.movement.CreateReservationInputPort;
-
-import com.gac.api.domain.service.movement.*;
-
-import com.gac.api.domain.model.AssetType;
+import com.gac.api.domain.exception.BusinessRuleException;
 import com.gac.api.domain.model.Movement;
 import com.gac.api.domain.model.MovementStatus;
 import com.gac.api.domain.model.MovementType;
-import com.gac.api.application.port.out.KeyGateway;
-import com.gac.api.application.port.out.MovementGateway;
-import com.gac.api.application.port.out.ProjectorGateway;
+import com.gac.api.domain.port.KeyGateway;
+import com.gac.api.domain.port.MovementGateway;
+import com.gac.api.domain.port.ProjectorGateway;
+import com.gac.api.domain.service.movement.AssetInventory;
+import com.gac.api.domain.service.movement.ConfirmationCodeGenerator;
+import com.gac.api.domain.service.movement.ProfessorPendencyRules;
 import java.time.LocalDateTime;
 
 public class CreateReservationUseCase implements CreateReservationInputPort {
@@ -26,34 +28,46 @@ public class CreateReservationUseCase implements CreateReservationInputPort {
         this.keyGateway = keyGateway;
     }
 
-    public Movement execute(
-            String professorRegistrationNumber, AssetType assetType, Long assetId, String academicPurpose) {
-        if (ProfessorPendencyRules.hasBlockingPendency(professorRegistrationNumber, movementGateway, null)) {
-            throw new RuntimeException("Professor has pending issues and cannot reserve (RN05).");
+    @Override
+    public MovementResult execute(CreateReservationCommand command) {
+        if (ProfessorPendencyRules.hasBlockingPendency(
+                command.professorRegistrationNumber(), movementGateway, null)) {
+            throw new BusinessRuleException("Professor has pending issues and cannot reserve (RN05).");
         }
 
-        if (movementGateway.countActiveByProfessorAndAssetType(professorRegistrationNumber, assetType) >= 1) {
-            throw new RuntimeException("Professor already has an active reservation or loan for this asset type.");
+        if (movementGateway.countActiveByProfessorAndAssetType(
+                        command.professorRegistrationNumber(), command.assetType())
+                >= 1) {
+            throw new BusinessRuleException(
+                    "Professor already has an active reservation or loan for this asset type.");
         }
 
-        if (movementGateway.findOpenByAsset(assetType, assetId, MovementType.RESERVATION).isPresent()) {
-            throw new RuntimeException("Asset already has an open reservation.");
+        if (movementGateway
+                .findOpenByAsset(command.assetType(), command.assetId(), MovementType.RESERVATION)
+                .isPresent()) {
+            throw new BusinessRuleException("Asset already has an open reservation.");
         }
 
-        AssetInventory.requireAvailable(assetType, assetId, projectorGateway, keyGateway);
+        AssetInventory.requireAvailable(
+                command.assetType(), command.assetId(), projectorGateway, keyGateway);
 
         Movement reservation = new Movement();
         reservation.setType(MovementType.RESERVATION);
         reservation.setStatus(MovementStatus.OPEN);
-        reservation.setProfessorRegistrationNumber(professorRegistrationNumber);
-        reservation.setAssetType(assetType);
-        reservation.setAssetId(assetId);
-        reservation.setAcademicPurpose(academicPurpose);
+        reservation.setProfessorRegistrationNumber(command.professorRegistrationNumber());
+        reservation.setAssetType(command.assetType());
+        reservation.setAssetId(command.assetId());
+        reservation.setAcademicPurpose(command.academicPurpose());
         reservation.setConfirmationCode(ConfirmationCodeGenerator.generate());
         reservation.setCreatedAt(LocalDateTime.now());
 
-        AssetInventory.markReserved(assetType, assetId, professorRegistrationNumber, projectorGateway, keyGateway);
+        AssetInventory.markReserved(
+                command.assetType(),
+                command.assetId(),
+                command.professorRegistrationNumber(),
+                projectorGateway,
+                keyGateway);
 
-        return movementGateway.save(reservation);
+        return MovementResult.from(movementGateway.save(reservation));
     }
 }

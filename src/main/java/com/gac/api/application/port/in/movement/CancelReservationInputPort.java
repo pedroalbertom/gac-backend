@@ -1,7 +1,8 @@
 package com.gac.api.application.port.in.movement;
 
-import com.gac.api.domain.model.Movement;
+import com.gac.api.application.dto.movement.CancelReservationCommand;
+import com.gac.api.application.dto.movement.MovementResult;
 
 public interface CancelReservationInputPort {
-    Movement execute(Long reservationId, String professorRegistrationNumber);
+    MovementResult execute(CancelReservationCommand command);
 }

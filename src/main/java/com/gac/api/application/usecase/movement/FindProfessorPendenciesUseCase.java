@@ -5,7 +5,7 @@ import com.gac.api.application.port.in.movement.FindProfessorPendenciesInputPort
 import com.gac.api.domain.service.movement.*;
 
 import com.gac.api.domain.model.Pendency;
-import com.gac.api.application.port.out.MovementGateway;
+import com.gac.api.domain.port.MovementGateway;
 import java.util.List;
 
 public class FindProfessorPendenciesUseCase implements FindProfessorPendenciesInputPort {

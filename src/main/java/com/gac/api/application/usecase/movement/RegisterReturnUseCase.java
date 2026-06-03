@@ -1,16 +1,18 @@
 package com.gac.api.application.usecase.movement;
 
+import com.gac.api.application.dto.movement.MovementResult;
+import com.gac.api.application.dto.movement.RegisterReturnCommand;
 import com.gac.api.application.port.in.movement.RegisterReturnInputPort;
-
-import com.gac.api.domain.service.movement.*;
-
+import com.gac.api.domain.exception.BusinessRuleException;
+import com.gac.api.domain.exception.NotFoundException;
 import com.gac.api.domain.model.Movement;
 import com.gac.api.domain.model.MovementStatus;
 import com.gac.api.domain.model.MovementType;
-import com.gac.api.domain.model.User;
-import com.gac.api.application.port.out.KeyGateway;
-import com.gac.api.application.port.out.MovementGateway;
-import com.gac.api.application.port.out.ProjectorGateway;
+import com.gac.api.domain.port.KeyGateway;
+import com.gac.api.domain.port.MovementGateway;
+import com.gac.api.domain.port.ProjectorGateway;
+import com.gac.api.domain.service.movement.AssetInventory;
+import com.gac.api.domain.service.movement.LoanAccessoryRules;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,26 +29,23 @@ public class RegisterReturnUseCase implements RegisterReturnInputPort {
         this.keyGateway = keyGateway;
     }
 
-    public Movement execute(
-            Long loanId,
-            User attendant,
-            boolean hasDefect,
-            String defectDescription,
-            List<String> returnedAccessories) {
+    @Override
+    public MovementResult execute(RegisterReturnCommand command) {
         Movement loan = movementGateway
-                .findById(loanId)
-                .orElseThrow(() -> new RuntimeException("Loan not found."));
+                .findById(command.loanId())
+                .orElseThrow(() -> new NotFoundException("Loan not found."));
 
         if (loan.getType() != MovementType.LOAN || loan.getStatus() != MovementStatus.OPEN) {
-            throw new RuntimeException("Movement is not an open loan.");
+            throw new BusinessRuleException("Movement is not an open loan.");
         }
 
-        if (hasDefect && (defectDescription == null || defectDescription.isBlank())) {
-            throw new RuntimeException("Defect description is required when item has a defect.");
+        if (command.hasDefect()
+                && (command.defectDescription() == null || command.defectDescription().isBlank())) {
+            throw new BusinessRuleException("Defect description is required when item has a defect.");
         }
 
         List<String> confirmedAccessories = LoanAccessoryRules.requireMatchingReturn(
-                loan.getAssetType(), loan.getLoanedAccessories(), returnedAccessories);
+                loan.getAssetType(), loan.getLoanedAccessories(), command.returnedAccessories());
 
         LocalDateTime now = LocalDateTime.now();
         loan.setStatus(MovementStatus.COMPLETED);
@@ -57,7 +56,7 @@ public class RegisterReturnUseCase implements RegisterReturnInputPort {
         returnMovement.setType(MovementType.RETURN);
         returnMovement.setStatus(MovementStatus.COMPLETED);
         returnMovement.setProfessorRegistrationNumber(loan.getProfessorRegistrationNumber());
-        returnMovement.setAttendantId(attendant.getId());
+        returnMovement.setAttendantId(command.attendantId());
         returnMovement.setAssetType(loan.getAssetType());
         returnMovement.setAssetId(loan.getAssetId());
         returnMovement.setAcademicPurpose(loan.getAcademicPurpose());
@@ -67,14 +66,14 @@ public class RegisterReturnUseCase implements RegisterReturnInputPort {
         returnMovement.setReturnedAt(now);
         returnMovement.setCreatedAt(now);
 
-        if (hasDefect) {
-            returnMovement.setDefectDescription(defectDescription);
+        if (command.hasDefect()) {
+            returnMovement.setDefectDescription(command.defectDescription());
             AssetInventory.markMaintenance(
-                    loan.getAssetType(), loan.getAssetId(), defectDescription, projectorGateway, keyGateway);
+                    loan.getAssetType(), loan.getAssetId(), command.defectDescription(), projectorGateway, keyGateway);
         } else {
             AssetInventory.markAvailable(loan.getAssetType(), loan.getAssetId(), projectorGateway, keyGateway);
         }
 
-        return movementGateway.save(returnMovement);
+        return MovementResult.from(movementGateway.save(returnMovement));
     }
 }

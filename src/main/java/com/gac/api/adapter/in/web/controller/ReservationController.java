@@ -1,5 +1,7 @@
 package com.gac.api.adapter.in.web.controller;
 
+import com.gac.api.application.dto.movement.CancelReservationCommand;
+import com.gac.api.application.dto.movement.CreateReservationCommand;
 import com.gac.api.application.port.in.movement.CancelReservationInputPort;
 import com.gac.api.application.port.in.movement.CreateReservationInputPort;
 import com.gac.api.application.port.in.movement.ListOpenReservationsInputPort;
@@ -45,9 +47,9 @@ public class ReservationController {
     @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<MovementResponse> create(
             @AuthenticationPrincipal JwtUserPrincipal principal, @Valid @RequestBody CreateReservationRequest request) {
-        var created = createReservationUseCase.execute(
-                principal.registrationNumber(), request.assetType(), request.assetId(), request.academicPurpose());
-        URI location = URI.create("/api/reservations/" + created.getId());
+        var created = createReservationUseCase.execute(new CreateReservationCommand(
+                principal.registrationNumber(), request.assetType(), request.assetId(), request.academicPurpose()));
+        URI location = URI.create("/api/reservations/" + created.id());
         return ResponseEntity.created(location).body(MovementMapper.toResponse(created));
     }
 
@@ -75,7 +77,8 @@ public class ReservationController {
     @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<MovementResponse> cancel(
             @AuthenticationPrincipal JwtUserPrincipal principal, @PathVariable Long id) {
-        var cancelled = cancelReservationUseCase.execute(id, principal.registrationNumber());
+        var cancelled = cancelReservationUseCase.execute(
+                new CancelReservationCommand(id, principal.registrationNumber()));
         return ResponseEntity.ok(MovementMapper.toResponse(cancelled));
     }
 }

@@ -1,18 +1,19 @@
 package com.gac.api.application.usecase.movement;
 
+import com.gac.api.application.dto.movement.ConfirmLoanCommand;
+import com.gac.api.application.dto.movement.MovementResult;
 import com.gac.api.application.port.in.movement.ConfirmLoanInputPort;
-
-import com.gac.api.domain.service.movement.*;
-
+import com.gac.api.domain.exception.BusinessRuleException;
+import com.gac.api.domain.exception.NotFoundException;
 import com.gac.api.domain.model.Movement;
 import com.gac.api.domain.model.MovementStatus;
 import com.gac.api.domain.model.MovementType;
-import com.gac.api.domain.model.User;
-import com.gac.api.application.port.out.KeyGateway;
-import com.gac.api.application.port.out.MovementGateway;
-import com.gac.api.application.port.out.ProjectorGateway;
+import com.gac.api.domain.port.KeyGateway;
+import com.gac.api.domain.port.MovementGateway;
+import com.gac.api.domain.port.ProjectorGateway;
+import com.gac.api.domain.service.movement.AssetInventory;
+import com.gac.api.domain.service.movement.ProfessorPendencyRules;
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class ConfirmLoanUseCase implements ConfirmLoanInputPort {
 
@@ -27,27 +28,24 @@ public class ConfirmLoanUseCase implements ConfirmLoanInputPort {
         this.keyGateway = keyGateway;
     }
 
-    public Movement execute(
-            Long reservationId,
-            String confirmationCode,
-            User attendant,
-            String room,
-            List<String> loanedAccessories) {
+    @Override
+    public MovementResult execute(ConfirmLoanCommand command) {
         Movement reservation = movementGateway
-                .findById(reservationId)
-                .orElseThrow(() -> new RuntimeException("Reservation not found."));
+                .findById(command.reservationId())
+                .orElseThrow(() -> new NotFoundException("Reservation not found."));
 
         if (reservation.getType() != MovementType.RESERVATION || reservation.getStatus() != MovementStatus.OPEN) {
-            throw new RuntimeException("Movement is not an open reservation.");
+            throw new BusinessRuleException("Movement is not an open reservation.");
         }
 
-        if (confirmationCode == null || !confirmationCode.equals(reservation.getConfirmationCode())) {
-            throw new RuntimeException("Invalid confirmation code.");
+        if (command.confirmationCode() == null
+                || !command.confirmationCode().equals(reservation.getConfirmationCode())) {
+            throw new BusinessRuleException("Invalid confirmation code.");
         }
 
         if (ProfessorPendencyRules.hasBlockingPendency(
                 reservation.getProfessorRegistrationNumber(), movementGateway, null)) {
-            throw new RuntimeException("Professor has pending issues and cannot borrow (RN05).");
+            throw new BusinessRuleException("Professor has pending issues and cannot borrow (RN05).");
         }
 
         AssetInventory.requireReservedForProfessor(
@@ -64,18 +62,18 @@ public class ConfirmLoanUseCase implements ConfirmLoanInputPort {
         loan.setType(MovementType.LOAN);
         loan.setStatus(MovementStatus.OPEN);
         loan.setProfessorRegistrationNumber(reservation.getProfessorRegistrationNumber());
-        loan.setAttendantId(attendant.getId());
+        loan.setAttendantId(command.attendantId());
         loan.setAssetType(reservation.getAssetType());
         loan.setAssetId(reservation.getAssetId());
         loan.setAcademicPurpose(reservation.getAcademicPurpose());
-        loan.setRoom(room);
-        loan.setLoanedAccessories(loanedAccessories);
+        loan.setRoom(command.room());
+        loan.setLoanedAccessories(command.loanedAccessories());
         loan.setCheckedOutAt(LocalDateTime.now());
         loan.setCreatedAt(LocalDateTime.now());
 
         AssetInventory.markOnLoan(
                 reservation.getAssetType(), reservation.getAssetId(), projectorGateway, keyGateway);
 
-        return movementGateway.save(loan);
+        return MovementResult.from(movementGateway.save(loan));
     }
 }

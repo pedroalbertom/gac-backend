@@ -6,7 +6,7 @@ import com.gac.api.domain.model.User;
 import com.gac.api.domain.exception.BusinessRuleException;
 import com.gac.api.domain.exception.ConflictException;
 import com.gac.api.application.port.out.PasswordHasher;
-import com.gac.api.application.port.out.UserGateway;
+import com.gac.api.domain.port.UserGateway;
 
 public class CreateUserUseCase implements CreateUserInputPort {
 

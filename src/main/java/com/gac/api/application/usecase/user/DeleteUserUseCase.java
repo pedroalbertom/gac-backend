@@ -3,7 +3,7 @@ package com.gac.api.application.usecase.user;
 import com.gac.api.application.port.in.user.DeleteUserInputPort;
 
 import com.gac.api.domain.exception.NotFoundException;
-import com.gac.api.application.port.out.UserGateway;
+import com.gac.api.domain.port.UserGateway;
 
 public class DeleteUserUseCase implements DeleteUserInputPort {
 

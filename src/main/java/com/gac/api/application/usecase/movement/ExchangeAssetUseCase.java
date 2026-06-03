@@ -8,10 +8,12 @@ import com.gac.api.domain.model.AssetType;
 import com.gac.api.domain.model.Movement;
 import com.gac.api.domain.model.MovementStatus;
 import com.gac.api.domain.model.MovementType;
+import com.gac.api.domain.exception.BusinessRuleException;
+import com.gac.api.domain.exception.NotFoundException;
 import com.gac.api.domain.model.User;
-import com.gac.api.application.port.out.KeyGateway;
-import com.gac.api.application.port.out.MovementGateway;
-import com.gac.api.application.port.out.ProjectorGateway;
+import com.gac.api.domain.port.KeyGateway;
+import com.gac.api.domain.port.MovementGateway;
+import com.gac.api.domain.port.ProjectorGateway;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -37,28 +39,28 @@ public class ExchangeAssetUseCase implements ExchangeAssetInputPort {
             String room,
             List<String> loanedAccessories) {
         if (defectDescription == null || defectDescription.isBlank()) {
-            throw new RuntimeException("Defect description is required for exchange.");
+            throw new BusinessRuleException("Defect description is required for exchange.");
         }
 
         Movement loan = movementGateway
                 .findById(loanId)
-                .orElseThrow(() -> new RuntimeException("Loan not found."));
+                .orElseThrow(() -> new NotFoundException("Loan not found."));
 
         if (loan.getType() != MovementType.LOAN || loan.getStatus() != MovementStatus.OPEN) {
-            throw new RuntimeException("Movement is not an open loan.");
+            throw new BusinessRuleException("Movement is not an open loan.");
         }
 
         if (loan.getAssetType() != substituteAssetType) {
-            throw new RuntimeException("Substitute asset must be the same type as the loaned asset.");
+            throw new BusinessRuleException("Substitute asset must be the same type as the loaned asset.");
         }
 
         if (loan.getAssetId().equals(substituteAssetId)) {
-            throw new RuntimeException("Substitute asset must be different from the defective asset.");
+            throw new BusinessRuleException("Substitute asset must be different from the defective asset.");
         }
 
         if (ProfessorPendencyRules.hasBlockingPendency(
                 loan.getProfessorRegistrationNumber(), movementGateway, loanId)) {
-            throw new RuntimeException("Professor has pending issues that block this operation (RN05).");
+            throw new BusinessRuleException("Professor has pending issues that block this operation (RN05).");
         }
 
         AssetInventory.requireAvailable(substituteAssetType, substituteAssetId, projectorGateway, keyGateway);

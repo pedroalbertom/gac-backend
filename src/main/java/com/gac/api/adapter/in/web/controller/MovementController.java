@@ -1,5 +1,7 @@
 package com.gac.api.adapter.in.web.controller;
 
+import com.gac.api.application.dto.movement.ConfirmLoanCommand;
+import com.gac.api.application.dto.movement.RegisterReturnCommand;
 import com.gac.api.application.port.in.movement.ConfirmLoanInputPort;
 import com.gac.api.application.port.in.movement.ExchangeAssetInputPort;
 import com.gac.api.application.port.in.movement.FindMovementsByProfessorInputPort;
@@ -62,14 +64,13 @@ public class MovementController {
     @PreAuthorize("hasAnyRole('ADMIN','ATTENDANT')")
     public ResponseEntity<MovementResponse> confirmLoan(
             @AuthenticationPrincipal JwtUserPrincipal principal, @Valid @RequestBody ConfirmLoanRequest request) {
-        var attendant = getUserByIdUseCase.execute(principal.userId());
-        var loan = confirmLoanUseCase.execute(
+        var loan = confirmLoanUseCase.execute(new ConfirmLoanCommand(
                 request.reservationId(),
                 request.confirmationCode(),
-                attendant,
+                principal.userId(),
                 request.room(),
-                request.loanedAccessories());
-        URI location = URI.create("/api/movements/" + loan.getId());
+                request.loanedAccessories()));
+        URI location = URI.create("/api/movements/" + loan.id());
         return ResponseEntity.created(location).body(MovementMapper.toResponse(loan));
     }
 
@@ -77,14 +78,13 @@ public class MovementController {
     @PreAuthorize("hasAnyRole('ADMIN','ATTENDANT')")
     public ResponseEntity<MovementResponse> registerReturn(
             @AuthenticationPrincipal JwtUserPrincipal principal, @Valid @RequestBody ReturnRequest request) {
-        var attendant = getUserByIdUseCase.execute(principal.userId());
-        var returnMovement = registerReturnUseCase.execute(
+        var returnMovement = registerReturnUseCase.execute(new RegisterReturnCommand(
                 request.loanId(),
-                attendant,
+                principal.userId(),
                 request.hasDefect(),
                 request.defectDescription(),
-                request.returnedAccessories());
-        URI location = URI.create("/api/movements/" + returnMovement.getId());
+                request.returnedAccessories()));
+        URI location = URI.create("/api/movements/" + returnMovement.id());
         return ResponseEntity.created(location).body(MovementMapper.toResponse(returnMovement));
     }
 

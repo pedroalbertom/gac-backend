@@ -6,7 +6,7 @@ import com.gac.api.domain.model.ItemStatus;
 import com.gac.api.domain.model.Projector;
 import com.gac.api.domain.exception.BusinessRuleException;
 import com.gac.api.domain.exception.ConflictException;
-import com.gac.api.application.port.out.ProjectorGateway;
+import com.gac.api.domain.port.ProjectorGateway;
 
 public class CreateProjectorUseCase implements CreateProjectorInputPort {
 

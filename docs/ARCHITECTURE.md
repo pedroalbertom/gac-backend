@@ -8,11 +8,13 @@ Dependency rule: **inner layers never depend on outer layers**.
 com.gac.api
 ├── domain/                         # Entities + domain services + domain exceptions
 │   ├── model/
+│   ├── port/                       # Outbound ports defined by the domain (persistence)
 │   ├── service/movement/
 │   └── exception/
 ├── application/                    # Use cases + ports
+│   ├── dto/movement/               # Command / Result for critical flows
 │   ├── port/in/                    # Primary ports (driving)
-│   ├── port/out/                   # Secondary ports (driven)
+│   ├── port/out/                   # App-only outbound (e.g. PasswordHasher)
 │   └── usecase/                    # Interactors implementing port/in
 └── adapter/
     ├── in/web/                     # REST API (controllers, DTOs, mappers)
@@ -46,9 +48,10 @@ flowchart TB
   UC --> OutPort
   UC --> Entity
   UC --> DomSvc
-  DomSvc --> OutPort
+  DomSvc --> DomainPort[domain.port]
   DomSvc --> Entity
-  JPA --> OutPort
+  DomainPort --> JPA
+  JPA --> DomainPort
   JWT --> OutPort
 ```
 
@@ -57,10 +60,12 @@ flowchart TB
 | Layer | Responsibility |
 |-------|----------------|
 | **domain.model** | `User`, `Projector`, `Key`, `Movement`, enums, read models (`AssetSummary`, `MovementReport`) |
-| **domain.service** | Pure business rules: `ShiftRules`, `ProfessorPendencyRules`, `AssetInventory`, `LoanAccessoryRules`, `ConfirmationCodeGenerator` |
+| **domain.port** | Persistence contracts (`MovementGateway`, `UserGateway`, …) — implemented in `adapter.out.persistence` |
+| **domain.service** | Business rules: `ShiftRules`, `ProfessorPendencyRules`, `AssetInventory`, … |
+| **application.dto** | `*Command` / `MovementResult` at use-case boundaries (reserva, empréstimo, devolução, cancelamento) |
 | **application.port.in** | API consumed by adapters (e.g. `ConfirmLoanInputPort`) |
-| **application.port.out** | Abstractions for persistence/security (`MovementGateway`, `PasswordHasher`, …) |
-| **application.usecase** | Orchestration; implements `*InputPort`, depends only on domain + port.out |
+| **application.port.out** | Cross-cutting app ports (`PasswordHasher`) |
+| **application.usecase** | Orchestration; implements `*InputPort`; uses `domain.port` + domain services |
 | **adapter.in.web** | HTTP, validation DTOs, mapping to/from domain |
 | **adapter.out.*** | Spring, JPA, JWT, cron |
 

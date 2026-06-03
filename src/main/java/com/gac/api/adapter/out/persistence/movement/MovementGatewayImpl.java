@@ -1,10 +1,11 @@
 package com.gac.api.adapter.out.persistence.movement;
 
+import com.gac.api.domain.exception.NotFoundException;
 import com.gac.api.domain.model.AssetType;
 import com.gac.api.domain.model.Movement;
 import com.gac.api.domain.model.MovementStatus;
 import com.gac.api.domain.model.MovementType;
-import com.gac.api.application.port.out.MovementGateway;
+import com.gac.api.domain.port.MovementGateway;
 import com.gac.api.adapter.out.persistence.user.UserEntity;
 import com.gac.api.adapter.out.persistence.user.UserRepository;
 import java.time.LocalDateTime;
@@ -97,7 +98,7 @@ public class MovementGatewayImpl implements MovementGateway {
         if (movement.getAttendantId() != null) {
             attendantEntity = userRepository
                     .findById(movement.getAttendantId())
-                    .orElseThrow(() -> new RuntimeException("Attendant not found."));
+                    .orElseThrow(() -> new NotFoundException("Attendant not found."));
         }
 
         MovementEntity entity = new MovementEntity();

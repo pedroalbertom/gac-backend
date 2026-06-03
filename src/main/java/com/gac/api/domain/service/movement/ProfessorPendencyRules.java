@@ -5,7 +5,7 @@ import com.gac.api.domain.model.MovementStatus;
 import com.gac.api.domain.model.MovementType;
 import com.gac.api.domain.model.Pendency;
 import com.gac.api.domain.model.PendencyType;
-import com.gac.api.application.port.out.MovementGateway;
+import com.gac.api.domain.port.MovementGateway;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

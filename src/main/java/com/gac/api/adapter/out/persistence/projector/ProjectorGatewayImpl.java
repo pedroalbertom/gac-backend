@@ -1,7 +1,7 @@
 package com.gac.api.adapter.out.persistence.projector;
 
 import com.gac.api.domain.model.Projector;
-import com.gac.api.application.port.out.ProjectorGateway;
+import com.gac.api.domain.port.ProjectorGateway;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Component;

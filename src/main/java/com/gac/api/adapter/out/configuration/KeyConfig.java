@@ -1,6 +1,6 @@
 package com.gac.api.adapter.out.configuration;
 
-import com.gac.api.application.port.out.KeyGateway;
+import com.gac.api.domain.port.KeyGateway;
 import com.gac.api.application.port.in.key.CreateKeyInputPort;
 import com.gac.api.application.port.in.key.DeleteKeyInputPort;
 import com.gac.api.application.port.in.key.GetKeyByIdInputPort;

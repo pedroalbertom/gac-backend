@@ -1,8 +1,8 @@
 package com.gac.api.application.port.in.movement;
 
-import com.gac.api.domain.model.AssetType;
-import com.gac.api.domain.model.Movement;
+import com.gac.api.application.dto.movement.CreateReservationCommand;
+import com.gac.api.application.dto.movement.MovementResult;
 
 public interface CreateReservationInputPort {
-    Movement execute(String professorRegistrationNumber, AssetType assetType, Long assetId, String academicPurpose);
+    MovementResult execute(CreateReservationCommand command);
 }

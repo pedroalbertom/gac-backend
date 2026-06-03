@@ -5,8 +5,8 @@ import com.gac.api.application.port.in.movement.ReleaseFromMaintenanceInputPort;
 import com.gac.api.domain.service.movement.*;
 
 import com.gac.api.domain.model.AssetType;
-import com.gac.api.application.port.out.KeyGateway;
-import com.gac.api.application.port.out.ProjectorGateway;
+import com.gac.api.domain.port.KeyGateway;
+import com.gac.api.domain.port.ProjectorGateway;
 
 public class ReleaseFromMaintenanceUseCase implements ReleaseFromMaintenanceInputPort {
 

@@ -1,7 +1,7 @@
 package com.gac.api.adapter.out.configuration;
 
 import com.gac.api.application.port.out.PasswordHasher;
-import com.gac.api.application.port.out.UserGateway;
+import com.gac.api.domain.port.UserGateway;
 import com.gac.api.application.port.in.user.CreateProfessorInputPort;
 import com.gac.api.application.port.in.user.CreateStaffUserInputPort;
 import com.gac.api.application.port.in.user.CreateUserInputPort;

@@ -2,9 +2,10 @@ package com.gac.api.application.usecase.movement;
 
 import com.gac.api.application.port.in.movement.GenerateMovementReportInputPort;
 
+import com.gac.api.domain.exception.BusinessRuleException;
 import com.gac.api.domain.model.Movement;
 import com.gac.api.domain.model.MovementReport;
-import com.gac.api.application.port.out.MovementGateway;
+import com.gac.api.domain.port.MovementGateway;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -19,10 +20,10 @@ public class GenerateMovementReportUseCase implements GenerateMovementReportInpu
 
     public MovementReport execute(LocalDate from, LocalDate to) {
         if (from == null || to == null) {
-            throw new RuntimeException("Report period start and end dates are required.");
+            throw new BusinessRuleException("Report period start and end dates are required.");
         }
         if (from.isAfter(to)) {
-            throw new RuntimeException("Report start date must be on or before end date.");
+            throw new BusinessRuleException("Report start date must be on or before end date.");
         }
 
         LocalDateTime start = from.atStartOfDay();

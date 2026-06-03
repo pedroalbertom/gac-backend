@@ -3,7 +3,7 @@ package com.gac.api.application.usecase.projector;
 import com.gac.api.application.port.in.projector.ListProjectorsInputPort;
 
 import com.gac.api.domain.model.Projector;
-import com.gac.api.application.port.out.ProjectorGateway;
+import com.gac.api.domain.port.ProjectorGateway;
 import java.util.List;
 
 public class ListProjectorsUseCase implements ListProjectorsInputPort {

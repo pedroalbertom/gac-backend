@@ -6,7 +6,7 @@ import com.gac.api.domain.model.ItemStatus;
 import com.gac.api.domain.model.Key;
 import com.gac.api.domain.exception.BusinessRuleException;
 import com.gac.api.domain.exception.NotFoundException;
-import com.gac.api.application.port.out.KeyGateway;
+import com.gac.api.domain.port.KeyGateway;
 
 public class DeleteKeyUseCase implements DeleteKeyInputPort {
 

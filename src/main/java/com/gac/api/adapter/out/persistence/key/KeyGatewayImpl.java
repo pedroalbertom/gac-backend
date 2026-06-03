@@ -1,7 +1,7 @@
 package com.gac.api.adapter.out.persistence.key;
 
 import com.gac.api.domain.model.Key;
-import com.gac.api.application.port.out.KeyGateway;
+import com.gac.api.domain.port.KeyGateway;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Component;

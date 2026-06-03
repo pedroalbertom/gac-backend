@@ -5,7 +5,7 @@ import com.gac.api.application.port.in.auth.AuthenticateUserInputPort;
 import com.gac.api.domain.model.User;
 import com.gac.api.domain.exception.UnauthorizedException;
 import com.gac.api.application.port.out.PasswordHasher;
-import com.gac.api.application.port.out.UserGateway;
+import com.gac.api.domain.port.UserGateway;
 
 public class AuthenticateUserUseCase implements AuthenticateUserInputPort {
 
