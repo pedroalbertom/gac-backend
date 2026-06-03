@@ -70,6 +70,13 @@ public class MovementGatewayImpl implements MovementGateway {
                 registrationNumber, assetType, MovementStatus.OPEN, List.of(MovementType.RESERVATION, MovementType.LOAN));
     }
 
+    @Override
+    public List<Movement> findByTypeAndStatus(MovementType type, MovementStatus status) {
+        return repository.findByTypeAndStatus(type, status).stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
     private MovementEntity toEntity(Movement movement) {
         UserEntity attendantEntity = null;
         if (movement.getAttendantId() != null) {

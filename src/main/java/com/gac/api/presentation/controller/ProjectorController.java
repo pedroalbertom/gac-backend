@@ -55,7 +55,7 @@ public class ProjectorController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','ATTENDANT')")
+    @PreAuthorize("hasAnyRole('ADMIN','ATTENDANT','PROFESSOR')")
     public ResponseEntity<List<ProjectorResponse>> list() {
         List<ProjectorResponse> projectors = listProjectorsUseCase.execute().stream()
                 .map(ProjectorMapper::toResponse)
@@ -64,7 +64,7 @@ public class ProjectorController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','ATTENDANT')")
+    @PreAuthorize("hasAnyRole('ADMIN','ATTENDANT','PROFESSOR')")
     public ResponseEntity<ProjectorResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(ProjectorMapper.toResponse(getProjectorByIdUseCase.execute(id)));
     }

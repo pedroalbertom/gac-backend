@@ -7,7 +7,10 @@ import com.gac.api.core.usecase.movement.CancelReservationUseCase;
 import com.gac.api.core.usecase.movement.ConfirmLoanUseCase;
 import com.gac.api.core.usecase.movement.CreateReservationUseCase;
 import com.gac.api.core.usecase.movement.FindMovementsByProfessorUseCase;
+import com.gac.api.core.usecase.movement.ListActiveLoansUseCase;
+import com.gac.api.core.usecase.movement.ListOpenReservationsUseCase;
 import com.gac.api.core.usecase.movement.ListMovementsUseCase;
+import com.gac.api.core.usecase.movement.RegisterReturnUseCase;
 import com.gac.api.core.usecase.movement.UpdateMovementUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,5 +49,21 @@ public class MovementConfig {
     @Bean
     public FindMovementsByProfessorUseCase findMovementsByProfessorUseCase(MovementGateway gateway) {
         return new FindMovementsByProfessorUseCase(gateway);
+    }
+
+    @Bean
+    public RegisterReturnUseCase registerReturnUseCase(
+            MovementGateway movementGateway, ProjectorGateway projectorGateway, KeyGateway keyGateway) {
+        return new RegisterReturnUseCase(movementGateway, projectorGateway, keyGateway);
+    }
+
+    @Bean
+    public ListActiveLoansUseCase listActiveLoansUseCase(MovementGateway gateway) {
+        return new ListActiveLoansUseCase(gateway);
+    }
+
+    @Bean
+    public ListOpenReservationsUseCase listOpenReservationsUseCase(MovementGateway gateway) {
+        return new ListOpenReservationsUseCase(gateway);
     }
 }

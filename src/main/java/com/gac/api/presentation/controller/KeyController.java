@@ -55,7 +55,7 @@ public class KeyController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','ATTENDANT')")
+    @PreAuthorize("hasAnyRole('ADMIN','ATTENDANT','PROFESSOR')")
     public ResponseEntity<List<KeyResponse>> list() {
         List<KeyResponse> keys =
                 listKeysUseCase.execute().stream().map(KeyMapper::toResponse).toList();
@@ -63,7 +63,7 @@ public class KeyController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','ATTENDANT')")
+    @PreAuthorize("hasAnyRole('ADMIN','ATTENDANT','PROFESSOR')")
     public ResponseEntity<KeyResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(KeyMapper.toResponse(getKeyByIdUseCase.execute(id)));
     }

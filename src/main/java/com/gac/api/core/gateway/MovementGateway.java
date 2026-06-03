@@ -22,4 +22,6 @@ public interface MovementGateway {
     List<Movement> findOpenByProfessorAndType(String registrationNumber, MovementType type);
 
     long countActiveByProfessorAndAssetType(String registrationNumber, AssetType assetType);
+
+    List<Movement> findByTypeAndStatus(MovementType type, MovementStatus status);
 }

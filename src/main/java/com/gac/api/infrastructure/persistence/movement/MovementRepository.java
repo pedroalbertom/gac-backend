@@ -22,4 +22,6 @@ public interface MovementRepository extends JpaRepository<MovementEntity, Long> 
             AssetType assetType,
             MovementStatus status,
             Collection<MovementType> types);
+
+    List<MovementEntity> findByTypeAndStatus(MovementType type, MovementStatus status);
 }

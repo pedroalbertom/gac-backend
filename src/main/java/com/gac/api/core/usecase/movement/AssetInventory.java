@@ -82,6 +82,30 @@ final class AssetInventory {
         keyGateway.save(key);
     }
 
+    static void markMaintenance(
+            AssetType assetType,
+            Long assetId,
+            String defectDescription,
+            ProjectorGateway projectorGateway,
+            KeyGateway keyGateway) {
+        if (assetType == AssetType.PROJECTOR) {
+            Projector projector = projectorGateway
+                    .findById(assetId)
+                    .orElseThrow(() -> new RuntimeException("Projector not found."));
+            projector.setStatus(ItemStatus.MAINTENANCE);
+            projector.setReservedRegistrationNumber(null);
+            projector.setDefectDescription(defectDescription);
+            projectorGateway.save(projector);
+            return;
+        }
+
+        Key key = keyGateway.findById(assetId).orElseThrow(() -> new RuntimeException("Key not found."));
+        key.setStatus(ItemStatus.MAINTENANCE);
+        key.setReservedRegistrationNumber(null);
+        key.setDefectDescription(defectDescription);
+        keyGateway.save(key);
+    }
+
     static void markAvailable(AssetType assetType, Long assetId, ProjectorGateway projectorGateway, KeyGateway keyGateway) {
         if (assetType == AssetType.PROJECTOR) {
             Projector projector = projectorGateway
