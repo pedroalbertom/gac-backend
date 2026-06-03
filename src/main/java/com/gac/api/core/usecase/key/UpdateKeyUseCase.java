@@ -1,6 +1,8 @@
 package com.gac.api.core.usecase.key;
 
 import com.gac.api.core.domain.Key;
+import com.gac.api.core.exception.BusinessRuleException;
+import com.gac.api.core.exception.NotFoundException;
 import com.gac.api.core.gateway.KeyGateway;
 
 public class UpdateKeyUseCase {
@@ -13,7 +15,7 @@ public class UpdateKeyUseCase {
 
     public Key execute(Long id, Key updatedData) {
         Key existing = keyGateway.findById(id)
-                .orElseThrow(() -> new RuntimeException("Key not found for the given id."));
+                .orElseThrow(() -> new NotFoundException("Key not found."));
 
         existing.setRoom(updatedData.getRoom());
         existing.setBlock(updatedData.getBlock());
@@ -23,7 +25,7 @@ public class UpdateKeyUseCase {
         }
 
         if (existing.getRoom() == null || existing.getBlock() == null) {
-            throw new RuntimeException("Room and block are required.");
+            throw new BusinessRuleException("Room and block are required.");
         }
 
         return keyGateway.save(existing);

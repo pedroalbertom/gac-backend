@@ -8,6 +8,7 @@ import com.gac.api.core.exception.UnauthorizedException;
 import java.time.Instant;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,6 +38,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ApiErrorResponse> handleUnauthorized(UnauthorizedException ex) {
         return build(HttpStatus.UNAUTHORIZED, ex.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiErrorResponse> handleForbidden(AccessDeniedException ex) {
+        return build(HttpStatus.FORBIDDEN, "Access denied.");
     }
 
     @ExceptionHandler(DomainException.class)

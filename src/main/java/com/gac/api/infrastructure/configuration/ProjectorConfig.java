@@ -3,6 +3,7 @@ package com.gac.api.infrastructure.configuration;
 import com.gac.api.core.gateway.ProjectorGateway;
 import com.gac.api.core.usecase.projector.CreateProjectorUseCase;
 import com.gac.api.core.usecase.projector.DeleteProjectorUseCase;
+import com.gac.api.core.usecase.projector.GetProjectorByIdUseCase;
 import com.gac.api.core.usecase.projector.ListProjectorsUseCase;
 import com.gac.api.core.usecase.projector.UpdateProjectorUseCase;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,11 @@ public class ProjectorConfig {
     @Bean
     public ListProjectorsUseCase listProjectorsUseCase(ProjectorGateway gateway) {
         return new ListProjectorsUseCase(gateway);
+    }
+
+    @Bean
+    public GetProjectorByIdUseCase getProjectorByIdUseCase(ProjectorGateway gateway) {
+        return new GetProjectorByIdUseCase(gateway);
     }
 
     @Bean

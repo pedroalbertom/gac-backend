@@ -31,5 +31,15 @@ public class DevDataInitializer implements CommandLineRunner {
         admin.setPassword(passwordHasher.encode("admin123"));
         admin.setRole(Role.ADMIN);
         userGateway.save(admin);
+
+        if (userGateway.findByRegistrationNumber("atendente").isEmpty()) {
+            User attendant = new User();
+            attendant.setName("Attendant");
+            attendant.setEmail("atendente@gac.local");
+            attendant.setRegistrationNumber("atendente");
+            attendant.setPassword(passwordHasher.encode("atendente123"));
+            attendant.setRole(Role.ATTENDANT);
+            userGateway.save(attendant);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.gac.api.core.usecase.projector;
 
 import com.gac.api.core.domain.Projector;
+import com.gac.api.core.exception.NotFoundException;
 import com.gac.api.core.gateway.ProjectorGateway;
 
 public class UpdateProjectorUseCase {
@@ -13,7 +14,7 @@ public class UpdateProjectorUseCase {
 
     public Projector execute(Long id, Projector updatedData) {
         Projector existing = projectorGateway.findById(id)
-                .orElseThrow(() -> new RuntimeException("Projector not found."));
+                .orElseThrow(() -> new NotFoundException("Projector not found."));
 
         existing.setBrand(updatedData.getBrand());
         existing.setModel(updatedData.getModel());

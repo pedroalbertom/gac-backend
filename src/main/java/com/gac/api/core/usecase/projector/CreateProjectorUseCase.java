@@ -2,6 +2,8 @@ package com.gac.api.core.usecase.projector;
 
 import com.gac.api.core.domain.ItemStatus;
 import com.gac.api.core.domain.Projector;
+import com.gac.api.core.exception.BusinessRuleException;
+import com.gac.api.core.exception.ConflictException;
 import com.gac.api.core.gateway.ProjectorGateway;
 
 public class CreateProjectorUseCase {
@@ -15,11 +17,11 @@ public class CreateProjectorUseCase {
     public Projector execute(Projector newProjector) {
         projectorGateway.findByAssetTag(newProjector.getAssetTag())
                 .ifPresent(p -> {
-                    throw new RuntimeException("A projector with this asset tag already exists.");
+                    throw new ConflictException("A projector with this asset tag already exists.");
                 });
 
         if (newProjector.getBrand() == null || newProjector.getAssetTag() == null) {
-            throw new RuntimeException("Brand and asset tag are required.");
+            throw new BusinessRuleException("Brand and asset tag are required.");
         }
 
         newProjector.setStatus(ItemStatus.AVAILABLE);

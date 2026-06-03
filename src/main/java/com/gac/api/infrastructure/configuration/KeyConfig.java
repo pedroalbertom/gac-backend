@@ -3,6 +3,7 @@ package com.gac.api.infrastructure.configuration;
 import com.gac.api.core.gateway.KeyGateway;
 import com.gac.api.core.usecase.key.CreateKeyUseCase;
 import com.gac.api.core.usecase.key.DeleteKeyUseCase;
+import com.gac.api.core.usecase.key.GetKeyByIdUseCase;
 import com.gac.api.core.usecase.key.ListKeysUseCase;
 import com.gac.api.core.usecase.key.UpdateKeyUseCase;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,11 @@ public class KeyConfig {
     @Bean
     public ListKeysUseCase listKeysUseCase(KeyGateway gateway) {
         return new ListKeysUseCase(gateway);
+    }
+
+    @Bean
+    public GetKeyByIdUseCase getKeyByIdUseCase(KeyGateway gateway) {
+        return new GetKeyByIdUseCase(gateway);
     }
 
     @Bean

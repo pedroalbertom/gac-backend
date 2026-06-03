@@ -92,16 +92,36 @@ com.gac.api.presentation
 
 ### API endpoints
 
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| POST | `/api/auth/login` | Public | Login with registration number + password |
-| GET | `/api/users/me` | JWT | Current user profile |
-| PATCH | `/api/users/me/password` | JWT | Change password (UC18) |
+#### Auth & profile
+| Method | Path | Roles | Description |
+|--------|------|-------|-------------|
+| POST | `/api/auth/login` | Public | Login |
+| GET | `/api/users/me` | Any | Current profile |
+| PATCH | `/api/users/me/password` | Any | Change password (UC18) |
 
-### Dev seed user
+#### Users (UC01)
+| Method | Path | Roles |
+|--------|------|-------|
+| POST/GET/PUT/DELETE | `/api/users` | ADMIN |
+| GET | `/api/users/{id}` | ADMIN |
+
+#### Professors (UC02)
+| Method | Path | Roles |
+|--------|------|-------|
+| POST/GET | `/api/professors` | ADMIN, ATTENDANT |
+
+#### Projectors & keys (UC08, UC13, UC14)
+| Method | Path | Roles |
+|--------|------|-------|
+| POST/GET/PUT | `/api/projectors`, `/api/keys` | ADMIN, ATTENDANT |
+| GET | `/api/projectors/{id}`, `/api/keys/{id}` | ADMIN, ATTENDANT |
+| DELETE | `/api/projectors/{id}`, `/api/keys/{id}` | ADMIN only (RN07) |
+
+### Dev seed users
 | Registration | Password | Role |
 |--------------|----------|------|
 | `admin` | `admin123` | ADMIN |
+| `atendente` | `atendente123` | ATTENDANT |
 
 Configure JWT in `application.properties`: `gac.jwt.secret`, `gac.jwt.expiration-ms`.
 
