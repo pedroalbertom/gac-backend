@@ -1,26 +1,70 @@
-# GAC Backend — Architecture
+# GAC Backend — Clean Architecture
 
-## Package layout
+## Layer overview
+
+Dependency rule: **inner layers never depend on outer layers**.
 
 ```
 com.gac.api
-├── ApiApplication
-├── core
-│   ├── domain          # User, Projector, Key, Movement, enums
-│   ├── gateway         # Port interfaces
-│   └── usecase         # Application services (execute())
-│       ├── user/
-│       ├── projector/
-│       ├── key/
-│       └── movement/
-└── infrastructure
-    ├── configuration   # Spring @Bean wiring for use cases
-    └── persistence     # JPA adapters per aggregate
-        ├── user/
-        ├── projector/
-        ├── key/
-        └── movement/
+├── domain/                         # Entities + domain services + domain exceptions
+│   ├── model/
+│   ├── service/movement/
+│   └── exception/
+├── application/                    # Use cases + ports
+│   ├── port/in/                    # Primary ports (driving)
+│   ├── port/out/                   # Secondary ports (driven)
+│   └── usecase/                    # Interactors implementing port/in
+└── adapter/
+    ├── in/web/                     # REST API (controllers, DTOs, mappers)
+    └── out/
+        ├── configuration/          # Spring @Bean wiring
+        ├── persistence/            # JPA adapters (gateway implementations)
+        ├── security/               # JWT, BCrypt, SecurityFilterChain
+        └── scheduler/              # Scheduled jobs (UC17)
 ```
+
+```mermaid
+flowchart TB
+  subgraph adapters_in [Adapter In]
+    Controller[REST Controllers]
+  end
+  subgraph application [Application]
+    InPort[port.in]
+    UC[usecase]
+    OutPort[port.out]
+  end
+  subgraph domain [Domain]
+    Entity[model]
+    DomSvc[service]
+  end
+  subgraph adapters_out [Adapter Out]
+    JPA[GatewayImpl + JPA]
+    JWT[Security]
+  end
+  Controller --> InPort
+  UC --> InPort
+  UC --> OutPort
+  UC --> Entity
+  UC --> DomSvc
+  DomSvc --> OutPort
+  DomSvc --> Entity
+  JPA --> OutPort
+  JWT --> OutPort
+```
+
+## Responsibilities
+
+| Layer | Responsibility |
+|-------|----------------|
+| **domain.model** | `User`, `Projector`, `Key`, `Movement`, enums, read models (`AssetSummary`, `MovementReport`) |
+| **domain.service** | Pure business rules: `ShiftRules`, `ProfessorPendencyRules`, `AssetInventory`, `LoanAccessoryRules`, `ConfirmationCodeGenerator` |
+| **application.port.in** | API consumed by adapters (e.g. `ConfirmLoanInputPort`) |
+| **application.port.out** | Abstractions for persistence/security (`MovementGateway`, `PasswordHasher`, …) |
+| **application.usecase** | Orchestration; implements `*InputPort`, depends only on domain + port.out |
+| **adapter.in.web** | HTTP, validation DTOs, mapping to/from domain |
+| **adapter.out.*** | Spring, JPA, JWT, cron |
+
+Wiring: `adapter.out.configuration.*` registers `@Bean` methods that return `*InputPort` and construct concrete `*UseCase` classes.
 
 ## Domain model (v1.3 alignment)
 
@@ -68,26 +112,25 @@ Professor                    System                         Attendant
 ```
 
 ### Use cases
-| Use case | Actor | Description |
-|----------|-------|-------------|
-| `CreateReservationUseCase` | Professor | UC11 — reserve available asset, generate 4-digit code |
-| `ConfirmLoanUseCase` | Attendant | UC03 — validate code, close reservation, open loan |
-| `CancelReservationUseCase` | Professor | UC11 alt — cancel own open reservation |
+| Input port | Actor | Description |
+|------------|-------|-------------|
+| `CreateReservationInputPort` | Professor | UC11 — reserve available asset, generate 4-digit code |
+| `ConfirmLoanInputPort` | Attendant | UC03 — validate code, close reservation, open loan |
+| `CancelReservationInputPort` | Professor | UC11 alt — cancel own open reservation |
 
-## Presentation layer (Sprint 1)
+## HTTP adapter (REST)
 
 ```
-com.gac.api.presentation
-├── controller/     AuthController, UserController
-├── dto/request/    LoginRequest, ChangePasswordRequest
-├── dto/response/   LoginResponse, UserResponse
-├── mapper/         UserMapper
+adapter/in/web/
+├── controller/
+├── dto/request|response/
+├── mapper/
 └── exception/      GlobalExceptionHandler, ApiErrorResponse
 ```
 
 ### Security
 - Stateless JWT (`Authorization: Bearer <token>`)
-- BCrypt password hashing via `PasswordHasher` port
+- BCrypt via `PasswordHasher` port (`BcryptPasswordHasher` adapter)
 - `@PreAuthorize` on protected routes
 
 ### API endpoints
