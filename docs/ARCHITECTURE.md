@@ -62,7 +62,7 @@ flowchart TB
 | **domain.model** | `User`, `Projector`, `Key`, `Movement`, enums, read models (`AssetSummary`, `MovementReport`) |
 | **domain.port** | Persistence contracts (`MovementGateway`, `UserGateway`, …) — implemented in `adapter.out.persistence` |
 | **domain.service** | Business rules: `ShiftRules`, `ProfessorPendencyRules`, `AssetInventory`, … |
-| **application.dto** | `*Command` / `MovementResult` at use-case boundaries (reserva, empréstimo, devolução, cancelamento) |
+| **application.dto** | `*Command` / `MovementResult` at use-case boundaries (reserva, empréstimo, devolução, cancelamento, troca) |
 | **application.port.in** | API consumed by adapters (e.g. `ConfirmLoanInputPort`) |
 | **application.port.out** | Cross-cutting app ports (`PasswordHasher`) |
 | **application.usecase** | Orchestration; implements `*InputPort`; uses `domain.port` + domain services |
@@ -122,6 +122,8 @@ Professor                    System                         Attendant
 | `CreateReservationInputPort` | Professor | UC11 — reserve available asset, generate 4-digit code |
 | `ConfirmLoanInputPort` | Attendant | UC03 — validate code, close reservation, open loan |
 | `CancelReservationInputPort` | Professor | UC11 alt — cancel own open reservation |
+| `ExchangeAssetInputPort` | Attendant | UC05 — troca por defeito (`ExchangeAssetCommand` → `MovementResult`) |
+| `RegisterReturnInputPort` | Attendant | UC04 — devolução (`RegisterReturnCommand` → `MovementResult`) |
 
 ## HTTP adapter (REST)
 

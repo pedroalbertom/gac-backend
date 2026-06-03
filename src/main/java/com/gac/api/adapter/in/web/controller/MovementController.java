@@ -1,6 +1,7 @@
 package com.gac.api.adapter.in.web.controller;
 
 import com.gac.api.application.dto.movement.ConfirmLoanCommand;
+import com.gac.api.application.dto.movement.ExchangeAssetCommand;
 import com.gac.api.application.dto.movement.RegisterReturnCommand;
 import com.gac.api.application.port.in.movement.ConfirmLoanInputPort;
 import com.gac.api.application.port.in.movement.ExchangeAssetInputPort;
@@ -8,7 +9,6 @@ import com.gac.api.application.port.in.movement.FindMovementsByProfessorInputPor
 import com.gac.api.application.port.in.movement.FindProfessorPendenciesInputPort;
 import com.gac.api.application.port.in.movement.ListActiveLoansInputPort;
 import com.gac.api.application.port.in.movement.RegisterReturnInputPort;
-import com.gac.api.application.port.in.user.GetUserByIdInputPort;
 import com.gac.api.adapter.out.security.JwtUserPrincipal;
 import com.gac.api.adapter.in.web.dto.request.ConfirmLoanRequest;
 import com.gac.api.adapter.in.web.dto.request.ExchangeAssetRequest;
@@ -41,7 +41,6 @@ public class MovementController {
     private final FindMovementsByProfessorInputPort findMovementsByProfessorUseCase;
     private final FindProfessorPendenciesInputPort findProfessorPendenciesUseCase;
     private final ExchangeAssetInputPort exchangeAssetUseCase;
-    private final GetUserByIdInputPort getUserByIdUseCase;
 
     public MovementController(
             ConfirmLoanInputPort confirmLoanUseCase,
@@ -49,15 +48,13 @@ public class MovementController {
             ListActiveLoansInputPort listActiveLoansUseCase,
             FindMovementsByProfessorInputPort findMovementsByProfessorUseCase,
             FindProfessorPendenciesInputPort findProfessorPendenciesUseCase,
-            ExchangeAssetInputPort exchangeAssetUseCase,
-            GetUserByIdInputPort getUserByIdUseCase) {
+            ExchangeAssetInputPort exchangeAssetUseCase) {
         this.confirmLoanUseCase = confirmLoanUseCase;
         this.registerReturnUseCase = registerReturnUseCase;
         this.listActiveLoansUseCase = listActiveLoansUseCase;
         this.findMovementsByProfessorUseCase = findMovementsByProfessorUseCase;
         this.findProfessorPendenciesUseCase = findProfessorPendenciesUseCase;
         this.exchangeAssetUseCase = exchangeAssetUseCase;
-        this.getUserByIdUseCase = getUserByIdUseCase;
     }
 
     @PostMapping("/loans")
@@ -92,16 +89,15 @@ public class MovementController {
     @PreAuthorize("hasAnyRole('ADMIN','ATTENDANT')")
     public ResponseEntity<MovementResponse> exchangeAsset(
             @AuthenticationPrincipal JwtUserPrincipal principal, @Valid @RequestBody ExchangeAssetRequest request) {
-        var attendant = getUserByIdUseCase.execute(principal.userId());
-        var newLoan = exchangeAssetUseCase.execute(
+        var newLoan = exchangeAssetUseCase.execute(new ExchangeAssetCommand(
                 request.loanId(),
                 request.substituteAssetType(),
                 request.substituteAssetId(),
                 request.defectDescription(),
-                attendant,
+                principal.userId(),
                 request.room(),
-                request.loanedAccessories());
-        URI location = URI.create("/api/movements/" + newLoan.getId());
+                request.loanedAccessories()));
+        URI location = URI.create("/api/movements/" + newLoan.id());
         return ResponseEntity.created(location).body(MovementMapper.toResponse(newLoan));
     }
 
