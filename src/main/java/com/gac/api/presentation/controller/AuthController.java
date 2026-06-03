@@ -1,8 +1,6 @@
 package com.gac.api.presentation.controller;
 
 import com.gac.api.application.service.auth.AuthenticateUserService;
-import com.gac.api.infrastructure.security.JwtService;
-
 import com.gac.api.domain.model.User;
 import com.gac.api.infrastructure.security.JwtService;
 import com.gac.api.presentation.dto.request.LoginRequest;
